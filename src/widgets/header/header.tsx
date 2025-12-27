@@ -1,9 +1,9 @@
-import { PRIVATE_ROUTES, PUBLIC_ROUTES } from '@src/shared/constants/routes'
+import { Link } from 'react-router-dom'
+
+import { PUBLIC_ROUTES } from '@src/shared/constants/routes'
 import { MaxContainerWrapper } from '@src/shared/ui/max-container-wrapper'
 
 import styles from './styles.module.scss'
-
-const isAuth = true
 
 export const Header = () => {
   return (
@@ -14,15 +14,9 @@ export const Header = () => {
           <ul className={styles.list}>
             {PUBLIC_ROUTES.map(r => (
               <li key={r.path}>
-                <a href={r.path}>{r.label}</a>
+                <Link to={r.path}>{r.label}</Link>
               </li>
             ))}
-            {isAuth &&
-              PRIVATE_ROUTES.map(r => (
-                <li key={r.path}>
-                  <a href={r.path}>{r.label}</a>
-                </li>
-              ))}
           </ul>
         </nav>
       </MaxContainerWrapper>

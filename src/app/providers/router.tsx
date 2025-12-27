@@ -1,9 +1,7 @@
 import { ReactNode } from 'react'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 
-import { HomePage } from '@src/pages/home-page'
-import { ProfilePage } from '@src/pages/profile-page'
-import { ROUTES } from '@src/shared/constants/routes'
+import { PRIVATE_ROUTES, PUBLIC_ROUTES } from '@src/shared/constants/routes'
 
 import { AppLayout } from '../layout/app-layout'
 
@@ -16,22 +14,18 @@ const PrivateRoute = ({ children }: { children: ReactNode }) => {
 const router = createBrowserRouter([
   {
     element: <AppLayout />,
-    children: [
-      // public
-      {
-        path: ROUTES.home,
-        element: <HomePage />,
-      },
-      // private
-      {
-        path: ROUTES.profile,
-        element: (
-          <PrivateRoute>
-            <ProfilePage />
-          </PrivateRoute>
-        ),
-      },
-    ],
+    children: [...PUBLIC_ROUTES, ...PRIVATE_ROUTES].map(route => {
+      if (route.type === 'private') {
+        return {
+          path: route.path,
+          element: <PrivateRoute>{route.element}</PrivateRoute>,
+        }
+      }
+      return {
+        path: route.path,
+        element: route.element,
+      }
+    }),
   },
 ])
 
