@@ -1,5 +1,5 @@
 import { ReactNode } from 'react'
-import { createBrowserRouter, Navigate, RouterProvider } from 'react-router-dom'
+import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 
 import { HomePage } from '@src/pages/home-page'
 import { ProfilePage } from '@src/pages/profile-page'
@@ -10,11 +10,7 @@ import { AppLayout } from '../layout/app-layout'
 const isUserLogged = true
 
 const PrivateRoute = ({ children }: { children: ReactNode }) => {
-  return isUserLogged ? children : <Navigate to="/login" replace />
-}
-
-const PublicRoute = ({ children }: { children: ReactNode }) => {
-  return !isUserLogged ? children : <Navigate to="/" replace />
+  return isUserLogged ? children : <>404 not found</>
 }
 
 const router = createBrowserRouter([
@@ -24,11 +20,7 @@ const router = createBrowserRouter([
       // public
       {
         path: ROUTES.home,
-        element: (
-          <PublicRoute>
-            <HomePage />
-          </PublicRoute>
-        ),
+        element: <HomePage />,
       },
       // private
       {
