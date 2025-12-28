@@ -1,10 +1,13 @@
 .root {
   display: flex;
   flex-direction: column;
-  min-height: 100%;
+  height: 100dvh;
   overflow: clip; // for sticky elements
 }
 
 .main {
   flex-grow: 1;
+  padding: rem(15px);
+  overflow-x: hidden;
+  overflow-y: auto;
 }

@@ -1,10 +1,11 @@
 import { ReactNode } from 'react'
 
-import { WelcomePage } from '@src/pages/welcome-page'
+import { BeatmapsPage, PlayPage, WelcomePage } from '@src/pages'
 
 export const ROUTES = {
   home: '/',
-  profile: '/profile',
+  play: '/play',
+  beatmaps: '/beatmaps',
 }
 
 interface Route {
@@ -19,6 +20,18 @@ export const PUBLIC_ROUTES: Route[] = [
     label: 'Home',
     path: ROUTES.home,
     element: <WelcomePage />,
+    type: 'public',
+  },
+  {
+    label: 'Play',
+    path: ROUTES.play,
+    element: <PlayPage />,
+    type: 'public',
+  },
+  {
+    label: 'Beatmaps',
+    path: ROUTES.beatmaps,
+    element: <BeatmapsPage />,
     type: 'public',
   },
 ]
