@@ -1,4 +1,16 @@
 .root {
+  position: sticky;
+  top: 0;
+  left: 0;
+  background: rgba(10, 10, 15, 0.7);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid hsla(0, 0%, 100%, 0.03);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+  padding-block: rem(12px);
+  z-index: 100;
+}
+
+.wrapper {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -9,4 +21,18 @@
   display: flex;
   align-items: center;
   gap: rem(10px);
+}
+
+.logo {
+  font-size: rem(24px);
+  font-weight: 700;
+  color: transparent;
+  background-clip: text;
+  -webkit-background-clip: text;
+  background-image: linear-gradient(
+    to right,
+    $accent-purple,
+    $accent-pink,
+    $accent-orange
+  );
 }

@@ -1,11 +1,11 @@
-// @use 'functions' as *;
-
 *,
 *::before,
 *::after {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
+  scrollbar-width: thin;
+  scrollbar-color: $text-primary $bg-primary;
 }
 
 #root,
@@ -16,14 +16,21 @@ body {
 
 html,
 body {
-  font-family: 'Open Sans', 'Helvetica Neue', Arial, Verdana, sans-serif;
+  font-family: 'Space Grotesk', sans-serif;
   font-size: $font-size-default;
   font-weight: 400;
   line-height: 1.5;
-  color: $black;
+  color: $text-primary;
 
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  background: $bg-primary;
+  background-image: linear-gradient(hsla(0, 0%, 100%, 0.03) 1px, transparent 0),
+    linear-gradient(90deg, hsla(0, 0%, 100%, 0.03) 1px, transparent 0);
+  background-size: 50px 50px;
 }
 
 img,

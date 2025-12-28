@@ -1,15 +1,17 @@
 import { Link } from 'react-router-dom'
 
-import { PUBLIC_ROUTES } from '@src/shared/constants/routes'
+import { PUBLIC_ROUTES, ROUTES } from '@src/shared/constants/routes'
 import { MaxContainerWrapper } from '@src/shared/ui/max-container-wrapper'
 
 import styles from './styles.module.scss'
 
 export const Header = () => {
   return (
-    <header>
-      <MaxContainerWrapper className={styles.root}>
-        <div>LOGO</div>
+    <header className={styles.root}>
+      <MaxContainerWrapper className={styles.wrapper}>
+        <Link to={ROUTES.home} className={styles.logo}>
+          PianoMania
+        </Link>
         <nav>
           <ul className={styles.list}>
             {PUBLIC_ROUTES.map(r => (
