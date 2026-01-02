@@ -1,3 +1,4 @@
+import tanstackQuery from '@tanstack/eslint-plugin-query'; 
 import tseslint from '@typescript-eslint/eslint-plugin';
 import tsParser from '@typescript-eslint/parser';
 import cssModules from 'eslint-plugin-css-modules';
@@ -27,6 +28,7 @@ export default [
       import: importPlugin,
       '@typescript-eslint': tseslint,
       'unused-imports': unusedImports,
+      '@tanstack/query': tanstackQuery,
     },
     settings: {
       react: {
@@ -66,6 +68,9 @@ export default [
       ],
       '@typescript-eslint/no-require-imports': 'error',
 
+      /* ---------- TanstackQuery ---------- */
+      '@tanstack/query/exhaustive-deps': 'warn',
+      
       /* ---------- Imports ---------- */
       'unused-imports/no-unused-imports': 'warn',
       'unused-imports/no-unused-vars': [
