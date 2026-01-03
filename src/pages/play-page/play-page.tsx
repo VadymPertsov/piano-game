@@ -1,5 +1,9 @@
-import { MaxContainerWrapper } from '@src/shared/ui/max-container-wrapper'
+import { MyBeatmapList } from '@src/features/play-page'
 
 export const PlayPage = () => {
-  return <MaxContainerWrapper>PlayPage</MaxContainerWrapper>
+  return (
+    <>
+      <MyBeatmapList />
+    </>
+  )
 }
