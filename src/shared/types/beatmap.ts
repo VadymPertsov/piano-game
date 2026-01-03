@@ -14,3 +14,16 @@ export interface BeatmapsSetItem {
   difficultyRating: number
   maxCombo: number
 }
+
+export interface BeatmapFile {
+  name: string
+  data: Uint8Array
+}
+
+export interface PreparedBeatmap {
+  beatmapsSet: Array<{
+    data: string
+    version: string
+  }>
+  audioUrl: string
+}

@@ -21,7 +21,9 @@ export const BeatmapItem = memo(({ item, onClick }: BeatmapItemProps) => (
       {item.beatmapSet.map(set => (
         <Link
           key={set.version}
-          to={`${ROUTES.play}/${set.beatmapsetId}`}
+          to={`${ROUTES.play}/${set.beatmapsetId}/${formatVersion(
+            set.version
+          )}`}
           className={styles.item}
         >
           {set.version}
@@ -30,3 +32,7 @@ export const BeatmapItem = memo(({ item, onClick }: BeatmapItemProps) => (
     </Accordion.Content>
   </Accordion.Item>
 ))
+
+const formatVersion = (version: string) => {
+  return version.replace(/^\[.*?\]\s*/, '')
+}

@@ -30,7 +30,7 @@ export const PUBLIC_ROUTES: Route[] = [
     type: 'public',
   },
   {
-    path: `${ROUTES.play}/:beatmapId`,
+    path: `${ROUTES.play}/:beatmapId/:version`,
     element: <PianoGame />,
     type: 'public',
   },
