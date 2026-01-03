@@ -2,7 +2,7 @@ import axios from 'axios'
 
 import { Beatmap } from '@src/shared/types/beatmap'
 
-const BASIC_BEATMAPS_IDS = [2120250, 2478424, 2464092]
+const BASIC_BEATMAPS_IDS = [2120250, 2464092]
 
 interface CatboyBeatmapResponse {
   id: number
