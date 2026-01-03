@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
 
-import { PUBLIC_ROUTES, ROUTES } from '@src/shared/constants/routes'
+import { ROUTES } from '@src/shared/constants/routes'
 import { MaxContainerWrapper } from '@src/shared/ui/max-container-wrapper'
 
 import styles from './styles.module.scss'
@@ -14,9 +14,9 @@ export const Header = () => {
         </Link>
         <nav>
           <ul className={styles.list}>
-            {PUBLIC_ROUTES.map(r => (
-              <li key={r.path}>
-                <Link to={r.path}>{r.label}</Link>
+            {Object.entries(ROUTES).map(([label, path]) => (
+              <li key={path}>
+                <Link to={path}>{label}</Link>
               </li>
             ))}
           </ul>

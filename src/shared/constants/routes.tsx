@@ -1,5 +1,6 @@
 import { ReactNode } from 'react'
 
+import { PianoGame } from '@src/features/piano-game'
 import { BeatmapsPage, PlayPage, WelcomePage } from '@src/pages'
 
 export const ROUTES = {
@@ -9,7 +10,7 @@ export const ROUTES = {
 }
 
 interface Route {
-  label: string
+  label?: string
   path: string
   element: ReactNode
   type: 'public' | 'private'
@@ -26,6 +27,11 @@ export const PUBLIC_ROUTES: Route[] = [
     label: 'Play',
     path: ROUTES.play,
     element: <PlayPage />,
+    type: 'public',
+  },
+  {
+    path: `${ROUTES.play}/:beatmapId`,
+    element: <PianoGame />,
     type: 'public',
   },
   {
