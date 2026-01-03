@@ -12,20 +12,3 @@
   overflow-x: hidden;
   overflow-y: auto;
 }
-
-.item {
-  padding: rem(15px);
-  background: rgba(10, 10, 15, 0.4);
-  font-size: rem(21px);
-  backdrop-filter: blur(12px);
-  box-shadow: 0 rem(8px) rem(32px) rgba(0, 0, 0, 0.12);
-  border-radius: rem(10px);
-  transition: box-shadow 0.3s ease, transform 0.2s ease;
-  &:hover {
-    box-shadow: 0 0 rem(30px) rgba(5, 5, 10, 0.3);
-    transform: translateY(rem(-2px));
-  }
-  &:active {
-    transform: translateY(0);
-  }
-}

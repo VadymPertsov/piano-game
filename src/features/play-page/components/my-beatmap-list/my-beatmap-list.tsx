@@ -1,9 +1,11 @@
-import { memo, useCallback, useEffect, useState } from 'react'
+import * as Accordion from '@radix-ui/react-accordion'
+import { useCallback, useEffect, useState } from 'react'
 
 import { Beatmap } from '@src/shared/types/beatmap'
 
 import { useBodyBackground } from '../../hooks/use-body-background'
 import { useMyBeatmapList } from '../../hooks/use-my-beatmap-list'
+import { BeatmapItem } from '../my-beatmap-item'
 
 import styles from './styles.module.scss'
 
@@ -31,7 +33,7 @@ export const MyBeatmapList = () => {
   return (
     <div className={styles.root}>
       <div></div>
-      <ul className={styles.list}>
+      <Accordion.Root type="single" collapsible className={styles.list}>
         {data.map(item => (
           <BeatmapItem
             key={item.title}
@@ -39,20 +41,7 @@ export const MyBeatmapList = () => {
             onClick={handleSelectBeatmap}
           />
         ))}
-      </ul>
+      </Accordion.Root>
     </div>
   )
 }
-
-interface BeatmapItemProps {
-  item: Beatmap
-  onClick: (item: Beatmap) => void
-}
-
-const BeatmapItem = memo(({ item, onClick }: BeatmapItemProps) => {
-  return (
-    <li className={styles.item} onClick={() => onClick(item)}>
-      {item.artist} - {item.title}
-    </li>
-  )
-})
