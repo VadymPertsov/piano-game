@@ -2,10 +2,6 @@
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   height: 100%;
-  background-repeat: no-repeat;
-  background-size: cover;
-  background-position: center center;
-  transition: background-image 0.4s ease;
 }
 
 .list {
@@ -20,6 +16,7 @@
 .item {
   padding: rem(15px);
   background: rgba(10, 10, 15, 0.4);
+  font-size: rem(21px);
   backdrop-filter: blur(12px);
   box-shadow: 0 rem(8px) rem(32px) rgba(0, 0, 0, 0.12);
   border-radius: rem(10px);

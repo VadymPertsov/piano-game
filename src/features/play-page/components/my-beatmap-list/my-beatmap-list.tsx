@@ -2,8 +2,10 @@ import { memo, useCallback, useEffect, useState } from 'react'
 
 import { Beatmap } from '@src/shared/types/beatmap'
 
-import styles from './styles.module.scss'
+import { useBodyBackground } from '../../hooks/use-body-background'
 import { useMyBeatmapList } from '../../hooks/use-my-beatmap-list'
+
+import styles from './styles.module.scss'
 
 export const MyBeatmapList = () => {
   const { data = [], isLoading } = useMyBeatmapList()
@@ -16,6 +18,8 @@ export const MyBeatmapList = () => {
     }
   }, [data, selectedBeatmap])
 
+  useBodyBackground(selectedBeatmap?.picture)
+
   const handleSelectBeatmap = useCallback((beatmap: Beatmap) => {
     setSelectedBeatmap(beatmap)
   }, [])
@@ -25,10 +29,7 @@ export const MyBeatmapList = () => {
   if (!selectedBeatmap) return null
 
   return (
-    <div
-      className={styles.root}
-      style={{ backgroundImage: `url(${selectedBeatmap.picture})` }}
-    >
+    <div className={styles.root}>
       <div></div>
       <ul className={styles.list}>
         {data.map(item => (
