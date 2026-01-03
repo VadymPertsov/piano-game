@@ -1,1 +1,1 @@
-export { PianoGame } from './piano-game'
+export { PianoGame } from './components/piano-game'
