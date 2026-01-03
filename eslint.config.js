@@ -91,6 +91,14 @@ export default [
             'internal',
             ['parent', 'sibling', 'index'],
           ],
+          pathGroups: [
+            {
+              pattern: './styles.module.scss',
+              group: 'index',
+              position: 'after',
+            },
+          ],
+          pathGroupsExcludedImportTypes: ['react'],
           'newlines-between': 'always',
           alphabetize: {
             order: 'asc',
