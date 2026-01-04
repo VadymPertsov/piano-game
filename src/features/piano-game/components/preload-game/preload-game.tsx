@@ -22,7 +22,7 @@ export const PreloadGame = () => {
     return <div>Загрузка: {displayPercent}%</div>
   }
 
-  if (!parsedData) return
+  if (!parsedData || !audioUrl) return
 
   return <PianoGame data={parsedData} audioUrl={audioUrl} />
 }

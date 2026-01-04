@@ -17,11 +17,11 @@ extend({
 
 interface PianoGameProps {
   data: ParsedBeatmapData
-  audioUrl?: string
+  audioUrl: string
 }
 
 export const PianoGame = ({ data, audioUrl }: PianoGameProps) => {
-  const { width, height } = useGameSettings(data)
+  const { width, height } = useGameSettings(data, audioUrl)
 
   return (
     <div className={styles.root}>
@@ -35,7 +35,7 @@ export const PianoGame = ({ data, audioUrl }: PianoGameProps) => {
         <pixiContainer>
           <DrawColumns />
           <DrawHitLine />
-          <GameScene audioUrl={audioUrl} />
+          <GameScene />
         </pixiContainer>
       </Application>
     </div>

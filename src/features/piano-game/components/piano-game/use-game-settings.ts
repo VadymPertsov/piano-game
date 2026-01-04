@@ -5,7 +5,7 @@ import { useGameConfigStore } from '../../stores/game-config-store'
 import { ParsedBeatmapData } from '../../types/beatmap-data'
 import { makeJudgeWindows, makeSVPoints } from '../../utils/game-helpers'
 
-export const useGameSettings = (data: ParsedBeatmapData) => {
+export const useGameSettings = (data: ParsedBeatmapData, audioUrl: string) => {
   const {
     settings: { difficulty, editor, audioLeadIn },
     columnNotes,
@@ -48,9 +48,11 @@ export const useGameSettings = (data: ParsedBeatmapData) => {
       notes: columnNotes,
       timings,
       filteredSVPoints: makeSVPoints(timings),
+      audioUrl,
     })
   }, [
     audioLeadIn,
+    audioUrl,
     basePixelsPerMs,
     canvasHeight,
     canvasWidth,
