@@ -1,9 +1,8 @@
 import { extend, useTick } from '@pixi/react'
-import { Graphics } from 'pixi.js'
+import { Graphics, Text } from 'pixi.js'
 import { useRef } from 'react'
 
 import { drawNotes } from './draw-notes'
-import { useGameSessionStore } from './game-session-store'
 import { updateNotes } from './update-notes'
 import { useBuildGameScene } from './use-build-game-scene'
 import { useGameConfigStore } from '../../stores/game-config-store'
@@ -11,6 +10,7 @@ import { ColumnNote } from '../../types/beatmap-data'
 
 extend({
   Graphics,
+  Text,
 })
 
 export const GameScene = () => {
@@ -23,12 +23,16 @@ export const GameScene = () => {
   )
   const dataNotes = useGameConfigStore(s => s.notes)
 
-  const registerMiss = useGameSessionStore(s => s.registerMiss)
-
-  const { isGameStart, timeNow } = useBuildGameScene(audioUrl, config)
+  const { isGameStart, timeNow, registerMiss, gameResults } = useBuildGameScene(
+    audioUrl,
+    config
+  )
 
   const columnNotes = useRef<ColumnNote[][]>(dataNotes)
   const columnIndex = useRef<number[]>(Array(config.cols).fill(0))
+
+  const comboRef = useRef<Text | null>(null)
+  const scoreRef = useRef<Text | null>(null)
 
   useTick(() => {
     if (!isGameStart) return
@@ -56,7 +60,39 @@ export const GameScene = () => {
       config,
       getDistanceFromHitline,
     })
+
+    if (
+      comboRef.current &&
+      comboRef.current.text !== String(gameResults.current.summary[0])
+    ) {
+      comboRef.current.text = String(gameResults.current.summary[0])
+    }
+
+    if (
+      scoreRef.current &&
+      scoreRef.current.text !== String(gameResults.current.score)
+    ) {
+      scoreRef.current.text = String(gameResults.current.score)
+    }
   })
 
-  return <pixiGraphics ref={graphicsRef} draw={() => {}} />
+  return (
+    <>
+      <pixiText
+        ref={comboRef}
+        text="0"
+        x={config.canvasWidth / 2}
+        y={config.canvasHeight / 2}
+        style={{ fill: 'white' }}
+      />
+      <pixiText
+        ref={scoreRef}
+        text="0"
+        x={10}
+        y={10}
+        style={{ fill: 'white' }}
+      />
+      <pixiGraphics ref={graphicsRef} draw={() => {}} />
+    </>
+  )
 }

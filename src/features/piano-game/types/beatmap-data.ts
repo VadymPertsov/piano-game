@@ -50,6 +50,7 @@ export type JudgeWindows = {
 
 export interface GameResults {
   score: number
+  currentCombo: number
   maxCombo: number
   summary: JudgeWindows
 }

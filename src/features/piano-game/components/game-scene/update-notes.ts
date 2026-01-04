@@ -1,4 +1,3 @@
-import { GameSessionState } from './game-session-store'
 import { GameConfig } from '../../stores/game-config-store'
 import { ColumnNote } from '../../types/beatmap-data'
 
@@ -7,12 +6,13 @@ export const updateNotes = ({
   config,
   columnIndex,
   columnNotes,
+  registerMiss,
 }: {
   t: number
   config: GameConfig
   columnNotes: ColumnNote[][]
   columnIndex: number[]
-  registerMiss: GameSessionState['registerMiss']
+  registerMiss: (note: ColumnNote, isTail?: boolean) => void
 }) => {
   for (let col = 0; col < config.cols; col++) {
     const notesInColumn = columnNotes[col]
@@ -24,7 +24,7 @@ export const updateNotes = ({
     if (!note) continue
 
     if (!note.hit && t > note.startTime + config.judgeWindows[0]) {
-      // registerMiss(note, col)
+      registerMiss(note)
       console.log('MISS')
 
       if (note.endTime === undefined) {
