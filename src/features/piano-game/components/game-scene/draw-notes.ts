@@ -1,7 +1,7 @@
 import { Graphics } from 'pixi.js'
 
 import { SIDE_PADDING, GAP } from '../../constants/game'
-import { GameConfig } from '../../stores/game-config-store'
+import { GameConfig, GameState } from '../../stores/game-config-store'
 import { ColumnNote } from '../../types/beatmap-data'
 
 export const drawNotes = ({
@@ -17,7 +17,7 @@ export const drawNotes = ({
   config: GameConfig
   columnNotes: ColumnNote[][]
   columnIndex: number[]
-  getDistanceFromHitline: (noteTime: number, currentTime: number) => number
+  getDistanceFromHitline: GameState['getDistanceFromHitline']
 }) => {
   for (let col = 0; col < config.cols; col++) {
     const notes = columnNotes[col]

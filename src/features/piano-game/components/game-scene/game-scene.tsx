@@ -39,6 +39,8 @@ export const GameScene = () => {
 
     const t = timeNow()
 
+    g.clear()
+
     updateNotes({
       t,
       config,
@@ -46,8 +48,6 @@ export const GameScene = () => {
       columnIndex: columnIndex.current,
       registerMiss,
     })
-
-    g.clear()
 
     drawNotes({
       g,
