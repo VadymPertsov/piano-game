@@ -1,7 +1,8 @@
 import { HOLD_NOTE } from '../constants/game'
 import {
   BeatmapSections,
-  ColumnNotes,
+  ColumnNote,
+  ParsedBeatmapData,
   TimingPoints,
 } from '../types/beatmap-data'
 
@@ -9,7 +10,7 @@ export const parseBeatmapData = (
   rawText?: string,
   canvasWidth: number = 512,
   canvasHeight: number = 700
-) => {
+): ParsedBeatmapData | undefined => {
   if (!rawText) return
 
   const sections = parseRawSections(rawText)
@@ -21,9 +22,9 @@ export const parseBeatmapData = (
   const COLS = Number(difficulty.CircleSize)
 
   return {
-    title: metadata.Title,
-    artist: metadata.Artist,
-    version: metadata.Version,
+    title: metadata.Title ?? '',
+    artist: metadata.Artist ?? '',
+    version: metadata.Version ?? '',
     settings: {
       audioLeadIn: Number(general.AudioLeadIn) + canvasHeight,
       difficulty: {
@@ -86,8 +87,8 @@ const parseNotes = (
   text: string = '',
   canvasWidth: number,
   columns: number
-): ColumnNotes[][] => {
-  const columnNotes: ColumnNotes[][] = Array.from({ length: columns }, () => [])
+): ColumnNote[][] => {
+  const columnNotes: ColumnNote[][] = Array.from({ length: columns }, () => [])
 
   text.split('\n').forEach(line => {
     const p = line.split(',')
