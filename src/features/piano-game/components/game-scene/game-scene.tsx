@@ -2,9 +2,8 @@ import { extend, useTick } from '@pixi/react'
 import { Graphics } from 'pixi.js'
 import { useRef } from 'react'
 
-import { useCurrentBeatmapStore } from '@src/store/current-beatmap-store'
-
 import { drawNotes } from './draw-notes'
+import { useGameSessionStore } from './game-session-store'
 import { updateNotes } from './update-notes'
 import { useBuildGameScene } from './use-build-game-scene'
 import { useGameConfigStore } from '../../stores/game-config-store'
@@ -24,7 +23,7 @@ export const GameScene = () => {
   )
   const dataNotes = useGameConfigStore(s => s.notes)
 
-  const registerMiss = useCurrentBeatmapStore(s => s.registerMiss)
+  const registerMiss = useGameSessionStore(s => s.registerMiss)
 
   const { isGameStart, timeNow } = useBuildGameScene(audioUrl, config)
 

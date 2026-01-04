@@ -1,5 +1,4 @@
-import { CurrentBeatmapState } from '@src/store/current-beatmap-store'
-
+import { GameSessionState } from './game-session-store'
 import { GameConfig } from '../../stores/game-config-store'
 import { ColumnNote } from '../../types/beatmap-data'
 
@@ -13,7 +12,7 @@ export const updateNotes = ({
   config: GameConfig
   columnNotes: ColumnNote[][]
   columnIndex: number[]
-  registerMiss: CurrentBeatmapState['registerMiss']
+  registerMiss: GameSessionState['registerMiss']
 }) => {
   for (let col = 0; col < config.cols; col++) {
     const notesInColumn = columnNotes[col]
