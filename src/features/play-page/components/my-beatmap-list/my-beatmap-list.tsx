@@ -1,9 +1,9 @@
 import * as Accordion from '@radix-ui/react-accordion'
 import { useCallback, useEffect, useState } from 'react'
 
+import { useBodyBackground } from '@src/shared/hooks/use-body-background'
 import { Beatmap } from '@src/shared/types/beatmap'
 
-import { useBodyBackground } from '../../hooks/use-body-background'
 import { useMyBeatmapList } from '../../hooks/use-my-beatmap-list'
 import { BeatmapItem } from '../my-beatmap-item'
 
