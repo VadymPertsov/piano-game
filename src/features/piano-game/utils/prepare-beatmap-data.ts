@@ -35,7 +35,6 @@ export const prepareBeatmapData = (
     type: 'audio/mpeg',
   })
   const audioUrl = URL.createObjectURL(blob)
-  console.log('re')
 
   return {
     beatmapsSet,

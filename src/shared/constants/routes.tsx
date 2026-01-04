@@ -1,6 +1,6 @@
 import { ReactNode } from 'react'
 
-import { PianoGame } from '@src/features/piano-game'
+import { PreloadGame } from '@src/features/piano-game'
 import { BeatmapsPage, PlayPage, WelcomePage } from '@src/pages'
 
 export const ROUTES = {
@@ -31,7 +31,7 @@ export const PUBLIC_ROUTES: Route[] = [
   },
   {
     path: `${ROUTES.play}/:beatmapId/:version`,
-    element: <PianoGame />,
+    element: <PreloadGame />,
     type: 'public',
   },
   {
