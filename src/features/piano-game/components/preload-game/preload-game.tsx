@@ -1,5 +1,8 @@
 import { useParams } from 'react-router-dom'
 
+import { useBodyBackground } from '@src/shared/hooks/use-body-background'
+import { useCurrentBeatmapStore } from '@src/store/current-beatmap-store'
+
 import { PianoGame } from '../piano-game'
 import { useDownloadBeatmap } from './use-download-beatmap'
 
@@ -11,6 +14,9 @@ export const PreloadGame = () => {
 
   const { isLoading, parsedData, displayPercent, audioUrl } =
     useDownloadBeatmap(Number(beatmapId), version)
+  const { picture } = useCurrentBeatmapStore(s => s.beatmap)
+
+  useBodyBackground(picture)
 
   if (isLoading && !parsedData) {
     return <div>Загрузка: {displayPercent}%</div>

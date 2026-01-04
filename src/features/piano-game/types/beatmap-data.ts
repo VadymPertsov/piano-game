@@ -50,3 +50,9 @@ export interface JudgeWindows {
   w50: number
   miss: number
 }
+
+export interface GameResults {
+  score: number
+  maxCombo: number
+  summary: JudgeWindows
+}
