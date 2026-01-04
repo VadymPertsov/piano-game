@@ -15,11 +15,21 @@ export interface GameConfig {
   audioLeadIn: number
 }
 
+interface InitGameConfig {
+  config: GameConfig
+  notes: ColumnNote[][]
+  timings: TimingPoints[]
+  filteredSVPoints: TimingPoints[]
+  audioUrl: string
+}
+
 interface GameState {
   notes: ColumnNote[][]
   timings: TimingPoints[]
 
   filteredSVPoints: TimingPoints[]
+
+  audioUrl: string
 
   config: GameConfig
 
@@ -28,12 +38,8 @@ interface GameState {
     notes,
     timings,
     filteredSVPoints,
-  }: {
-    config: GameConfig
-    notes: ColumnNote[][]
-    timings: TimingPoints[]
-    filteredSVPoints: TimingPoints[]
-  }) => void
+    audioUrl,
+  }: InitGameConfig) => void
 
   getDistanceFromHitline: (noteTime: number, currentTime: number) => number
 
@@ -52,6 +58,8 @@ export const useGameConfigStore = create<GameState>((set, get) => ({
   timings: [],
 
   filteredSVPoints: [],
+
+  audioUrl: '',
 
   config: {
     colWidth: 0,
@@ -77,11 +85,10 @@ export const useGameConfigStore = create<GameState>((set, get) => ({
     config,
     notes,
     timings,
-  }: {
-    config: GameConfig
-    notes: ColumnNote[][]
-    timings: TimingPoints[]
-  }) => set({ config, notes, timings }),
+    filteredSVPoints,
+    audioUrl,
+  }: InitGameConfig) =>
+    set({ config, notes, timings, filteredSVPoints, audioUrl }),
 
   getDistanceFromHitline: (noteTime, currentTime) => {
     if (noteTime === currentTime) return 0
