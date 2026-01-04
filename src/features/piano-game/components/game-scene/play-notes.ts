@@ -87,7 +87,6 @@ export const pressNote = ({
 export const releaseNote = ({
   activeHold,
   column,
-  columnIndex,
   judgeWindows,
   getJudgement,
   registerJudge,
@@ -96,7 +95,6 @@ export const releaseNote = ({
 }: {
   column: number
   activeHold: (ColumnNote | null)[]
-  columnIndex: number[]
   judgeWindows: JudgeWindows
   timeNow: () => number
   registerMiss: (note: ColumnNote, isTail?: boolean) => void
@@ -125,7 +123,4 @@ export const releaseNote = ({
       registerMiss(note, true)
     }
   }
-
-  const index = columnIndex[column] ?? 0
-  columnIndex[column] = index + 1
 }

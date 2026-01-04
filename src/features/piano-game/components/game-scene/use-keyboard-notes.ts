@@ -62,7 +62,6 @@ export const useKeyboardNotes = ({
       releaseNote({
         activeHold,
         column: col,
-        columnIndex,
         judgeWindows,
         getJudgement,
         registerJudge,

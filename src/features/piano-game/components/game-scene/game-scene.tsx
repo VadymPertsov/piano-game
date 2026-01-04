@@ -82,9 +82,9 @@ export const GameScene = () => {
 
     if (
       comboRef.current &&
-      comboRef.current.text !== String(gameResults.current.summary[0])
+      comboRef.current.text !== String(gameResults.current.currentCombo)
     ) {
-      comboRef.current.text = String(gameResults.current.summary[0])
+      comboRef.current.text = String(gameResults.current.currentCombo)
     }
 
     if (
