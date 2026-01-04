@@ -42,13 +42,10 @@ export interface ParsedBeatmapData {
   columnNotes: ColumnNote[][]
 }
 
-export interface JudgeWindows {
-  max: number
-  w300: number
-  w200: number
-  w100: number
-  w50: number
-  miss: number
+export type JudgePoints = 320 | 300 | 200 | 100 | 50 | 0
+
+export type JudgeWindows = {
+  [K in JudgePoints]: number
 }
 
 export interface GameResults {

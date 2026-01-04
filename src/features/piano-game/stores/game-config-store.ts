@@ -1,6 +1,11 @@
 import { create } from 'zustand'
 
-import { ColumnNote, JudgeWindows, TimingPoints } from '../types/beatmap-data'
+import {
+  ColumnNote,
+  JudgePoints,
+  JudgeWindows,
+  TimingPoints,
+} from '../types/beatmap-data'
 
 export interface GameConfig {
   colWidth: number
@@ -23,7 +28,7 @@ interface InitGameConfig {
   audioUrl: string
 }
 
-interface GameState {
+export interface GameState {
   notes: ColumnNote[][]
   timings: TimingPoints[]
 
@@ -72,12 +77,12 @@ export const useGameConfigStore = create<GameState>((set, get) => ({
     preempt: 0,
     audioLeadIn: 0,
     judgeWindows: {
-      max: 16,
-      w300: 0,
-      w200: 0,
-      w100: 0,
-      w50: 0,
-      miss: 0,
+      320: 16,
+      300: 0,
+      200: 0,
+      100: 0,
+      50: 0,
+      0: 0,
     },
   },
 
@@ -175,17 +180,17 @@ export const useGameConfigStore = create<GameState>((set, get) => ({
     return segments
   },
 
-  getJudgement: delta => {
+  getJudgement: (delta: number): JudgePoints => {
     const {
       config: { judgeWindows },
     } = get()
 
     const d = Math.abs(delta)
-    if (d <= judgeWindows.max) return 320
-    if (d <= judgeWindows.w300) return 300
-    if (d <= judgeWindows.w200) return 200
-    if (d <= judgeWindows.w100) return 100
-    if (d <= judgeWindows.w50) return 50
+    if (d <= judgeWindows[320]) return 320
+    if (d <= judgeWindows[300]) return 300
+    if (d <= judgeWindows[200]) return 200
+    if (d <= judgeWindows[100]) return 100
+    if (d <= judgeWindows[50]) return 50
     return 0
   },
 }))

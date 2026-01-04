@@ -2,6 +2,8 @@ import { extend, useTick } from '@pixi/react'
 import { Graphics } from 'pixi.js'
 import { useRef } from 'react'
 
+import { useCurrentBeatmapStore } from '@src/store/current-beatmap-store'
+
 import { drawNotes } from './draw-notes'
 import { updateNotes } from './update-notes'
 import { useBuildGameScene } from './use-build-game-scene'
@@ -22,6 +24,8 @@ export const GameScene = () => {
   )
   const dataNotes = useGameConfigStore(s => s.notes)
 
+  const registerMiss = useCurrentBeatmapStore(s => s.registerMiss)
+
   const { isGameStart, timeNow } = useBuildGameScene(audioUrl, config)
 
   const columnNotes = useRef<ColumnNote[][]>(dataNotes)
@@ -40,6 +44,7 @@ export const GameScene = () => {
       config,
       columnNotes: columnNotes.current,
       columnIndex: columnIndex.current,
+      registerMiss,
     })
 
     g.clear()
