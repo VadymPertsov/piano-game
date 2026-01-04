@@ -1,7 +1,11 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 
 import { GameConfig } from '../../stores/game-config-store'
-import { ColumnNote, GameResults, JudgePoints } from '../../types/beatmap-data'
+import {
+  ColumnNote,
+  GameResults,
+  RegisterJudge,
+} from '../../types/beatmap-data'
 
 export const useBuildGameScene = (audioUrl: string, config: GameConfig) => {
   const [isGameStart, setIsGameStart] = useState<boolean>(false)
@@ -17,7 +21,7 @@ export const useBuildGameScene = (audioUrl: string, config: GameConfig) => {
 
   const audio = useMemo(() => new Audio(audioUrl), [audioUrl])
 
-  const registerJudge = (value: Exclude<JudgePoints, 0>) => {
+  const registerJudge = (value: RegisterJudge) => {
     gameResults.current.summary[value]++
     gameResults.current.currentCombo++
     gameResults.current.maxCombo = Math.max(

@@ -48,6 +48,10 @@ export type JudgeWindows = {
   [K in JudgePoints]: number
 }
 
+export type NoteHighlight = 'transparent' | 'click' | 'miss' | 'tap'
+
+export type RegisterJudge = Exclude<JudgePoints, 0>
+
 export interface GameResults {
   score: number
   currentCombo: number

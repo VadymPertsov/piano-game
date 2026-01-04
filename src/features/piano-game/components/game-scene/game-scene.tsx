@@ -5,8 +5,9 @@ import { useRef } from 'react'
 import { drawNotes } from './draw-notes'
 import { updateNotes } from './update-notes'
 import { useBuildGameScene } from './use-build-game-scene'
+import { useKeyboardNotes } from './use-keyboard-notes'
 import { useGameConfigStore } from '../../stores/game-config-store'
-import { ColumnNote } from '../../types/beatmap-data'
+import { ColumnNote, NoteHighlight } from '../../types/beatmap-data'
 
 extend({
   Graphics,
@@ -22,17 +23,35 @@ export const GameScene = () => {
     s => s.getDistanceFromHitline
   )
   const dataNotes = useGameConfigStore(s => s.notes)
+  const getJudgement = useGameConfigStore(s => s.getJudgement)
 
-  const { isGameStart, timeNow, registerMiss, gameResults } = useBuildGameScene(
-    audioUrl,
-    config
-  )
+  const { isGameStart, timeNow, registerMiss, registerJudge, gameResults } =
+    useBuildGameScene(audioUrl, config)
 
   const columnNotes = useRef<ColumnNote[][]>(dataNotes)
   const columnIndex = useRef<number[]>(Array(config.cols).fill(0))
 
+  const activeHold = useRef<(ColumnNote | null)[]>(
+    Array(config.cols).fill(null)
+  )
+  const columnHighlight = useRef<NoteHighlight[]>(
+    Array(config.cols).fill('transparent')
+  )
+
   const comboRef = useRef<Text | null>(null)
   const scoreRef = useRef<Text | null>(null)
+
+  useKeyboardNotes({
+    activeHold: activeHold.current,
+    columnHighlight: columnHighlight.current,
+    columnIndex: columnIndex.current,
+    columnNotes: columnNotes.current,
+    judgeWindows: config.judgeWindows,
+    getJudgement,
+    registerJudge,
+    registerMiss,
+    timeNow,
+  })
 
   useTick(() => {
     if (!isGameStart) return

@@ -55,7 +55,7 @@ export interface GameState {
     end: number
   ) => { from: number; to: number; sv: number }[]
 
-  getJudgement: (delta: number) => number
+  getJudgement: (delta: number) => JudgePoints
 }
 
 export const useGameConfigStore = create<GameState>((set, get) => ({
