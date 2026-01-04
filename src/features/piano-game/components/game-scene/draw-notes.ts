@@ -29,15 +29,18 @@ export const drawNotes = ({
       const note = notes[i]
       if (!note) continue
 
+      if (note.hit && !note.endTime) continue
+
       const timeDiff = note.startTime - t
       if (timeDiff > config.preempt) continue
 
-      const exitTime = note.endTime ?? note.startTime
-      if (exitTime < t - 300) continue
+      const hitWindow = config.judgeWindows[0]
+      if (note.endTime && t > note.endTime + hitWindow) continue
+      if (!note.endTime && t > note.startTime + hitWindow && !note.missed)
+        continue
 
       const headOffset = getDistanceFromHitline(note.startTime, t)
       const headY = config.hitLineY - headOffset
-
       const x = SIDE_PADDING + note.column * (config.colWidth + GAP)
 
       const noteParams = {
@@ -47,7 +50,6 @@ export const drawNotes = ({
 
       if (note.endTime) {
         const tailOffset = getDistanceFromHitline(note.endTime, t)
-
         const tailY = config.hitLineY - tailOffset
 
         const top = Math.min(headY, tailY)

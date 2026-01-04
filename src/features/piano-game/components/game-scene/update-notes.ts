@@ -14,32 +14,36 @@ export const updateNotes = ({
   columnIndex: number[]
   registerMiss: (note: ColumnNote, isTail?: boolean) => void
 }) => {
+  const hitWindow = config.judgeWindows[0]
+
   for (let col = 0; col < config.cols; col++) {
-    const notesInColumn = columnNotes[col]
-    if (!notesInColumn) continue
-
     const index = columnIndex[col] ?? 0
+    const note = columnNotes[col]?.[index]
 
-    const note = notesInColumn[index]
     if (!note) continue
 
-    if (!note.hit && t > note.startTime + config.judgeWindows[0]) {
+    if (
+      !note.hit &&
+      !note.holding &&
+      !note.missed &&
+      t > note.startTime + hitWindow
+    ) {
       registerMiss(note)
-      console.log('MISS')
-
+      note.missed = true
       if (note.endTime === undefined) {
-        columnIndex[col] = (columnIndex[col] ?? 0) + 1
-      } else {
-        note.missed = true
+        columnIndex[col] = index + 1
+        continue
       }
     }
 
-    if (
-      note.endTime !== undefined &&
-      t > note.endTime + config.judgeWindows[0] &&
-      !note.tailHit
-    ) {
-      columnIndex[col] = (columnIndex[col] ?? 0) + 1
+    if (note.endTime !== undefined) {
+      if (t > note.endTime + hitWindow) {
+        if (note.hit && !note.tailHit) {
+          registerMiss(note, true)
+        }
+
+        columnIndex[col] = index + 1
+      }
     }
   }
 }
