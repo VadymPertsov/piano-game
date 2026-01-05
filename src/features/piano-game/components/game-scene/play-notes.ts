@@ -16,7 +16,7 @@ export const pressNote = ({
   getJudgement,
   registerJudge,
   registerMiss,
-  timeNow,
+  currentTime,
 }: {
   column: number
   activeHold: (ColumnNote | null)[]
@@ -24,7 +24,7 @@ export const pressNote = ({
   columnIndex: number[]
   columnHighlight: NoteHighlight[]
   judgeWindows: JudgeWindows
-  timeNow: () => number
+  currentTime: number
   registerMiss: (note: ColumnNote, isTail?: boolean) => void
   getJudgement: (delta: number) => JudgePoints
   registerJudge: (value: RegisterJudge) => void
@@ -39,8 +39,7 @@ export const pressNote = ({
     return
   }
 
-  const t = timeNow()
-  const delta = t - note.startTime
+  const delta = currentTime - note.startTime
   const hitWindow = judgeWindows[0]
 
   if (delta < -hitWindow) {
@@ -91,12 +90,12 @@ export const releaseNote = ({
   getJudgement,
   registerJudge,
   registerMiss,
-  timeNow,
+  currentTime,
 }: {
   column: number
   activeHold: (ColumnNote | null)[]
   judgeWindows: JudgeWindows
-  timeNow: () => number
+  currentTime: number
   registerMiss: (note: ColumnNote, isTail?: boolean) => void
   getJudgement: (delta: number) => JudgePoints
   registerJudge: (value: RegisterJudge) => void
@@ -108,8 +107,7 @@ export const releaseNote = ({
   note.holding = false
   activeHold[column] = null
 
-  const t = timeNow()
-  const delta = t - note.endTime
+  const delta = currentTime - note.endTime
   const hitWindow = judgeWindows[0]
 
   if (Math.abs(delta) > hitWindow) {

@@ -25,9 +25,6 @@ export const GameScene = () => {
   const dataNotes = useGameConfigStore(s => s.notes)
   const getJudgement = useGameConfigStore(s => s.getJudgement)
 
-  const { isGameStart, timeNow, registerMiss, registerJudge, gameResults } =
-    useBuildGameScene(audioUrl, config)
-
   const columnNotes = useRef<ColumnNote[][]>(dataNotes)
   const columnIndex = useRef<number[]>(Array(config.cols).fill(0))
 
@@ -41,16 +38,25 @@ export const GameScene = () => {
   const comboRef = useRef<Text | null>(null)
   const scoreRef = useRef<Text | null>(null)
 
+  const {
+    isGameStart,
+    updateTime,
+    timeRef,
+    registerMiss,
+    registerJudge,
+    gameResults,
+  } = useBuildGameScene(audioUrl, config)
+
   useKeyboardNotes({
     activeHold: activeHold.current,
     columnHighlight: columnHighlight.current,
     columnIndex: columnIndex.current,
     columnNotes: columnNotes.current,
     judgeWindows: config.judgeWindows,
+    timeRef,
     getJudgement,
     registerJudge,
     registerMiss,
-    timeNow,
   })
 
   useTick(() => {
@@ -59,7 +65,8 @@ export const GameScene = () => {
     const g = graphicsRef.current
     if (!g) return
 
-    const t = timeNow()
+    updateTime()
+    const t = timeRef.current
 
     g.clear()
 

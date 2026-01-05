@@ -1,4 +1,4 @@
-import { useMemo, useEffect } from 'react'
+import { useMemo, useEffect, RefObject } from 'react'
 
 import { pressNote, releaseNote } from './play-notes'
 import {
@@ -15,10 +15,10 @@ export const useKeyboardNotes = ({
   columnIndex,
   columnNotes,
   judgeWindows,
+  timeRef,
   getJudgement,
   registerJudge,
   registerMiss,
-  timeNow,
   keys = ['d', 'f', 'j', 'k'],
 }: {
   activeHold: (ColumnNote | null)[]
@@ -26,10 +26,10 @@ export const useKeyboardNotes = ({
   columnNotes: ColumnNote[][]
   columnIndex: number[]
   judgeWindows: JudgeWindows
+  timeRef: RefObject<number>
   getJudgement: (delta: number) => JudgePoints
   registerJudge: (value: RegisterJudge) => void
   registerMiss: (note: ColumnNote, isTail?: boolean) => void
-  timeNow: () => number
   keys?: string[]
 }) => {
   const memoizedKeys = useMemo(() => keys, [keys])
@@ -51,7 +51,7 @@ export const useKeyboardNotes = ({
         getJudgement,
         registerJudge,
         registerMiss,
-        timeNow,
+        currentTime: timeRef.current,
       })
     }
 
@@ -66,7 +66,7 @@ export const useKeyboardNotes = ({
         getJudgement,
         registerJudge,
         registerMiss,
-        timeNow,
+        currentTime: timeRef.current,
       })
     }
 
@@ -82,11 +82,11 @@ export const useKeyboardNotes = ({
     columnHighlight,
     columnIndex,
     columnNotes,
-    judgeWindows,
     getJudgement,
+    judgeWindows,
+    memoizedKeys,
     registerJudge,
     registerMiss,
-    timeNow,
-    memoizedKeys,
+    timeRef,
   ])
 }

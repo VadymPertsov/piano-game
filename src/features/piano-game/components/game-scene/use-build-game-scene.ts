@@ -11,6 +11,7 @@ export const useBuildGameScene = (audioUrl: string, config: GameConfig) => {
   const [isGameStart, setIsGameStart] = useState<boolean>(false)
 
   const startTimeRef = useRef<number>(0)
+  const currentTimeRef = useRef<number>(0)
 
   const gameResults = useRef<GameResults>({
     currentCombo: 0,
@@ -46,39 +47,35 @@ export const useBuildGameScene = (audioUrl: string, config: GameConfig) => {
     gameResults.current.currentCombo = 0
   }
 
-  const timeNow = () => {
-    if (!audio) return 0
+  const updateTime = () => {
+    if (!isGameStart) {
+      currentTimeRef.current = -config.audioLeadIn
+      return
+    }
 
-    if (!isGameStart) return -config.audioLeadIn
+    if (audio.currentTime > 0) {
+      currentTimeRef.current = audio.currentTime * 1000
+      return
+    }
 
-    if (audio.currentTime > 0) return audio.currentTime * 1000
-
-    return startTimeRef.current
-      ? performance.now() - startTimeRef.current - config.audioLeadIn
-      : 0
+    currentTimeRef.current =
+      performance.now() - startTimeRef.current - config.audioLeadIn
   }
 
   useEffect(() => {
     if (isGameStart) return
 
     const onKeyDown = (e: KeyboardEvent) => {
-      if (e.key !== 'g') return
+      if (e.key === 'g') {
+        setIsGameStart(true)
+        startTimeRef.current = performance.now()
+        audio.currentTime = 0
 
-      setIsGameStart(true)
-
-      startTimeRef.current = performance.now()
-
-      audio.currentTime = 0
-
-      setTimeout(() => {
-        audio.play()
-      }, config.audioLeadIn)
-
-      window.removeEventListener('keydown', onKeyDown)
+        setTimeout(() => audio.play(), config.audioLeadIn)
+      }
     }
 
     window.addEventListener('keydown', onKeyDown)
-
     return () => {
       window.removeEventListener('keydown', onKeyDown)
     }
@@ -86,7 +83,8 @@ export const useBuildGameScene = (audioUrl: string, config: GameConfig) => {
 
   return {
     isGameStart,
-    timeNow,
+    timeRef: currentTimeRef,
+    updateTime,
     gameResults,
     registerMiss,
     registerJudge,

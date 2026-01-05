@@ -48,7 +48,7 @@ const DrawColumns = () => {
 
   const draw = useCallback(
     (g: Graphics) => {
-      g.clear()
+      // g.clear()
 
       for (let i = 0; i < cols - 1; i++) {
         const x = SIDE_PADDING + i * (colWidth + GAP)
@@ -67,7 +67,7 @@ const DrawHitLine = () => {
 
   const draw = useCallback(
     (g: Graphics) => {
-      g.clear()
+      // g.clear()
 
       g.texture(white, 0xaaaaaa, 0, hitLineY, canvasWidth, 4)
     },
