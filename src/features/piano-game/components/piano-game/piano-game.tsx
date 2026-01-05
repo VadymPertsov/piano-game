@@ -6,6 +6,7 @@ import { useGameSettings } from './use-game-settings'
 import { GAP, SIDE_PADDING } from '../../constants/game'
 import { useGameConfigStore } from '../../stores/game-config-store'
 import { ParsedBeatmapData } from '../../types/beatmap-data'
+import { white } from '../../utils/white-texture'
 import { GameScene } from '../game-scene'
 
 import styles from './styles.module.scss'
@@ -49,13 +50,11 @@ const DrawColumns = () => {
     (g: Graphics) => {
       g.clear()
 
-      for (let i = 0; i < cols; i++) {
+      for (let i = 0; i < cols - 1; i++) {
         const x = SIDE_PADDING + i * (colWidth + GAP)
 
-        g.rect(Math.round(x), 0, colWidth, canvasHeight)
-        g.fill({ color: 0x333333, alpha: 0.2 })
-
-        g.stroke({ width: 1, color: 0x000000 })
+        g.alpha = 0.1
+        g.texture(white, 0x000000, x + colWidth - 1, 0, 1, canvasHeight)
       }
     },
     [canvasHeight, colWidth, cols]
@@ -70,8 +69,7 @@ const DrawHitLine = () => {
     (g: Graphics) => {
       g.clear()
 
-      g.rect(0, hitLineY, canvasWidth, 4)
-      g.fill({ color: 0xaaaaaa, alpha: 0.2 })
+      g.texture(white, 0xaaaaaa, 0, hitLineY, canvasWidth, 4)
     },
     [canvasWidth, hitLineY]
   )

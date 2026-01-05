@@ -3,6 +3,7 @@ import { Graphics } from 'pixi.js'
 import { SIDE_PADDING, GAP } from '../../constants/game'
 import { GameConfig, GameState } from '../../stores/game-config-store'
 import { ColumnNote } from '../../types/beatmap-data'
+import { white } from '../../utils/white-texture'
 
 export const drawNotes = ({
   g,
@@ -83,11 +84,15 @@ const drawHoldNote = (
   bottom: number,
   config: Pick<GameConfig, 'colWidth' | 'noteHeight'>
 ) => {
-  g.rect(x, top, config.colWidth, bottom - top)
-  g.fill({ color: 0x42a5f5, alpha: 0.6 })
-
-  g.rect(x, y - config.noteHeight, config.colWidth, config.noteHeight)
-  g.fill({ color: 0x555 })
+  g.texture(white, 0x555, x, top, config.colWidth, bottom - top)
+  g.texture(
+    white,
+    0x42a5f5,
+    x,
+    y - config.noteHeight,
+    config.colWidth,
+    config.noteHeight
+  )
 }
 
 const drawTapNote = (
@@ -96,6 +101,12 @@ const drawTapNote = (
   y: number,
   config: Pick<GameConfig, 'colWidth' | 'noteHeight'>
 ) => {
-  g.rect(x, y - config.noteHeight, config.colWidth, config.noteHeight)
-  g.fill({ color: 0x42a5f5 })
+  g.texture(
+    white,
+    0x42a5f5,
+    x,
+    y - config.noteHeight,
+    config.colWidth,
+    config.noteHeight
+  )
 }
