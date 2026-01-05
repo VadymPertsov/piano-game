@@ -20,7 +20,19 @@ export const drawNotes = ({
   columnIndex: number[]
   getDistanceFromHitline: GameState['getDistanceFromHitline']
 }) => {
-  for (let col = 0; col < config.cols; col++) {
+  const {
+    canvasHeight,
+    colWidth,
+    cols,
+    hitLineY,
+    judgeWindows,
+    noteHeight,
+    preempt,
+  } = config
+
+  const hitWindow = judgeWindows[0]
+
+  for (let col = 0; col < cols; col++) {
     const notes = columnNotes[col]
     const start = columnIndex[col]
 
@@ -30,47 +42,35 @@ export const drawNotes = ({
       const note = notes[i]
       if (!note) continue
 
-      if (note.hit && !note.endTime) continue
+      if (note.hit && note.endTime === undefined) continue
 
-      const timeDiff = note.startTime - t
-      if (timeDiff > config.preempt) continue
+      const dt = note.startTime - t
+      if (dt > preempt) continue
 
-      const hitWindow = config.judgeWindows[0]
-      if (note.endTime && t > note.endTime + hitWindow) continue
-      if (!note.endTime && t > note.startTime + hitWindow && !note.missed)
+      if (
+        (note.endTime !== undefined && t > note.endTime + hitWindow) ||
+        (note.endTime === undefined &&
+          t > note.startTime + hitWindow &&
+          !note.missed)
+      )
         continue
 
-      const headOffset = getDistanceFromHitline(note.startTime, t)
-      const headY = config.hitLineY - headOffset
-      const x = SIDE_PADDING + note.column * (config.colWidth + GAP)
+      const headY = hitLineY - getDistanceFromHitline(note.startTime, t)
+      const x = SIDE_PADDING + note.column * (colWidth + GAP)
 
-      const noteParams = {
-        colWidth: config.colWidth,
-        noteHeight: config.noteHeight,
-      }
-
-      if (note.endTime) {
-        const tailOffset = getDistanceFromHitline(note.endTime, t)
-        const tailY = config.hitLineY - tailOffset
+      if (note.endTime !== undefined) {
+        const tailY = hitLineY - getDistanceFromHitline(note.endTime, t)
 
         const top = Math.min(headY, tailY)
         const bottom = Math.max(headY, tailY)
 
-        if (
-          bottom < -config.noteHeight ||
-          top > config.canvasHeight + config.noteHeight
-        )
-          continue
+        if (bottom < -noteHeight || top > canvasHeight + noteHeight) continue
 
-        drawHoldNote(g, x, headY, top, bottom, noteParams)
+        drawHoldNote(g, x, headY, top, bottom, colWidth, noteHeight)
       } else {
-        if (
-          headY < -config.noteHeight ||
-          headY > config.canvasHeight + config.noteHeight
-        )
-          continue
+        if (headY < -noteHeight || headY > canvasHeight + noteHeight) continue
 
-        drawTapNote(g, x, headY, noteParams)
+        drawTapNote(g, x, headY, colWidth, noteHeight)
       }
     }
   }
@@ -82,31 +82,19 @@ const drawHoldNote = (
   y: number,
   top: number,
   bottom: number,
-  config: Pick<GameConfig, 'colWidth' | 'noteHeight'>
+  colWidth: number,
+  noteHeight: number
 ) => {
-  g.texture(white, 0x555, x, top, config.colWidth, bottom - top)
-  g.texture(
-    white,
-    0x42a5f5,
-    x,
-    y - config.noteHeight,
-    config.colWidth,
-    config.noteHeight
-  )
+  g.texture(white, 0x555, x, top, colWidth, bottom - top)
+  g.texture(white, 0x42a5f5, x, y - noteHeight, colWidth, noteHeight)
 }
 
 const drawTapNote = (
   g: Graphics,
   x: number,
   y: number,
-  config: Pick<GameConfig, 'colWidth' | 'noteHeight'>
+  colWidth: number,
+  noteHeight: number
 ) => {
-  g.texture(
-    white,
-    0x42a5f5,
-    x,
-    y - config.noteHeight,
-    config.colWidth,
-    config.noteHeight
-  )
+  g.texture(white, 0x42a5f5, x, y - noteHeight, colWidth, noteHeight)
 }
