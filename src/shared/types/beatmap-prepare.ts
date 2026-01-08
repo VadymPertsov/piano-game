@@ -1,11 +1,7 @@
 export interface ColumnNote {
   column: number
   startTime: number
-  hit: boolean
-  missed: boolean
   endTime?: number
-  tailHit?: boolean
-  holding?: boolean
 }
 
 export interface TimingPoints {

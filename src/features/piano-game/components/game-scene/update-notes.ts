@@ -1,48 +1,41 @@
-// import { ColumnNote } from '@src/shared/types/beatmap-prepare'
+import { RefObject } from 'react'
 
-// export const updateNotes = ({
-//   t,
-//   config,
-//   columnIndex,
-//   columnNotes,
-//   registerMiss,
-// }: {
-//   t: number
-//   config: GameConfig
-//   columnNotes: ColumnNote[][]
-//   columnIndex: number[]
-//   registerMiss: (note: ColumnNote, isTail?: boolean) => void
-// }) => {
-//   const { cols, judgeWindows } = config
+import { GameNote } from '../../types'
 
-//   const hitWindow = judgeWindows[0]
+export const updateNotes = ({
+  columnNotesRef,
+  time,
+}: {
+  columnNotesRef: RefObject<GameNote[][]>
+  hitWindow: number
+  time: number
+}) => {
+  for (const col of columnNotesRef.current) {
+    let i = 0
 
-//   for (let col = 0; col < cols; col++) {
-//     const index = columnIndex[col] ?? 0
-//     const note = columnNotes[col]?.[index]
+    while (i < col.length) {
+      const hitObject = col[i]
 
-//     if (!note) continue
+      if (!hitObject) continue
 
-//     if (
-//       !note.hit &&
-//       !note.holding &&
-//       !note.missed &&
-//       t > note.startTime + hitWindow
-//     ) {
-//       registerMiss(note)
-//       note.missed = true
-//       if (note.endTime === undefined) {
-//         columnIndex[col] = index + 1
-//         continue
-//       }
-//     }
+      hitObject.update(time)
 
-//     if (note.endTime !== undefined && t > note.endTime + hitWindow) {
-//       if (note.hit && !note.tailHit) {
-//         registerMiss(note, true)
-//       }
+      if (hitObject.shouldRemove) {
+        // hitObject.sprite.parent?.removeChild(hitObject.sprite)
+        // // hitObject.sprite.destroy()
+        // col.shift()
+        // i = 0
+        hitObject.sprite.parent?.removeChild(hitObject.sprite)
+        hitObject.sprite.destroy({ children: true })
+        col.splice(i, 1)
+        continue
+      }
 
-//       columnIndex[col] = index + 1
-//     }
-//   }
-// }
+      if (hitObject.sprite.y < 0) {
+        break
+      }
+
+      i++
+    }
+  }
+}

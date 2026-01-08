@@ -114,17 +114,11 @@ const parseNotes = (
         column,
         startTime,
         endTime,
-        hit: false,
-        tailHit: false,
-        holding: false,
-        missed: false,
       })
     } else {
       currentColumn.push({
         column,
         startTime,
-        hit: false,
-        missed: false,
       })
     }
   })
