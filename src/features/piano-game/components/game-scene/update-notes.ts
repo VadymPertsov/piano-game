@@ -1,49 +1,41 @@
-import { GameConfig } from '../../stores/game-config-store'
-import { ColumnNote } from '../../types/beatmap-data'
+import { RefObject } from 'react'
+
+import { GameNote } from '../../types'
 
 export const updateNotes = ({
-  t,
-  config,
-  columnIndex,
-  columnNotes,
-  registerMiss,
+  columnNotesRef,
+  time,
 }: {
-  t: number
-  config: GameConfig
-  columnNotes: ColumnNote[][]
-  columnIndex: number[]
-  registerMiss: (note: ColumnNote, isTail?: boolean) => void
+  columnNotesRef: RefObject<GameNote[][]>
+  hitWindow: number
+  time: number
 }) => {
-  const hitWindow = config.judgeWindows[0]
+  for (const col of columnNotesRef.current) {
+    let i = 0
 
-  for (let col = 0; col < config.cols; col++) {
-    const index = columnIndex[col] ?? 0
-    const note = columnNotes[col]?.[index]
+    while (i < col.length) {
+      const hitObject = col[i]
 
-    if (!note) continue
+      if (!hitObject) continue
 
-    if (
-      !note.hit &&
-      !note.holding &&
-      !note.missed &&
-      t > note.startTime + hitWindow
-    ) {
-      registerMiss(note)
-      note.missed = true
-      if (note.endTime === undefined) {
-        columnIndex[col] = index + 1
+      hitObject.update(time)
+
+      if (hitObject.shouldRemove) {
+        // hitObject.sprite.parent?.removeChild(hitObject.sprite)
+        // // hitObject.sprite.destroy()
+        // col.shift()
+        // i = 0
+        hitObject.sprite.parent?.removeChild(hitObject.sprite)
+        hitObject.sprite.destroy({ children: true })
+        col.splice(i, 1)
         continue
       }
-    }
 
-    if (note.endTime !== undefined) {
-      if (t > note.endTime + hitWindow) {
-        if (note.hit && !note.tailHit) {
-          registerMiss(note, true)
-        }
-
-        columnIndex[col] = index + 1
+      if (hitObject.sprite.y < 0) {
+        break
       }
+
+      i++
     }
   }
 }

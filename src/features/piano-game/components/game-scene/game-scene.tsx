@@ -1,83 +1,62 @@
 import { extend, useTick } from '@pixi/react'
-import { Graphics, Text } from 'pixi.js'
+import { BitmapText, Container, Sprite } from 'pixi.js'
 import { useRef } from 'react'
 
-import { drawNotes } from './draw-notes'
+import { ParsedBeatmapData } from '@src/shared/types/beatmap-prepare'
+
+import { DrawColumns, DrawCombo, DrawHitLine, DrawScore } from '../draw-ui'
+import { useBuildGame } from './hooks/use-build-game'
+import { useInitNotes } from './hooks/use-init-notes'
+import { useInputNotes } from './hooks/use-input-notes'
 import { updateNotes } from './update-notes'
-import { useBuildGameScene } from './use-build-game-scene'
-import { useKeyboardNotes } from './use-keyboard-notes'
-import { useGameConfigStore } from '../../stores/game-config-store'
-import { ColumnNote, NoteHighlight } from '../../types/beatmap-data'
+import { GameNote } from '../../types'
 
 extend({
-  Graphics,
-  Text,
+  BitmapText,
+  Container,
+  Sprite,
 })
 
-export const GameScene = () => {
-  const graphicsRef = useRef<Graphics>(null)
+interface GameSceneProps {
+  data: ParsedBeatmapData
+}
 
-  const config = useGameConfigStore(s => s.config)
-  const audioUrl = useGameConfigStore(s => s.audioUrl)
-  const getDistanceFromHitline = useGameConfigStore(
-    s => s.getDistanceFromHitline
-  )
-  const dataNotes = useGameConfigStore(s => s.notes)
-  const getJudgement = useGameConfigStore(s => s.getJudgement)
-
-  const { isGameStart, timeNow, registerMiss, registerJudge, gameResults } =
-    useBuildGameScene(audioUrl, config)
-
-  const columnNotes = useRef<ColumnNote[][]>(dataNotes)
-  const columnIndex = useRef<number[]>(Array(config.cols).fill(0))
-
-  const activeHold = useRef<(ColumnNote | null)[]>(
-    Array(config.cols).fill(null)
-  )
-  const columnHighlight = useRef<NoteHighlight[]>(
-    Array(config.cols).fill('transparent')
-  )
-
-  const comboRef = useRef<Text | null>(null)
-  const scoreRef = useRef<Text | null>(null)
-
-  useKeyboardNotes({
-    activeHold: activeHold.current,
-    columnHighlight: columnHighlight.current,
-    columnIndex: columnIndex.current,
-    columnNotes: columnNotes.current,
-    judgeWindows: config.judgeWindows,
-    getJudgement,
-    registerJudge,
-    registerMiss,
-    timeNow,
+export const GameScene = ({ data }: GameSceneProps) => {
+  const {
+    isGameStart,
+    timeRef,
+    updateTime,
+    gameState,
+    columnNotes: dataNotes,
+    gameResults,
+  } = useBuildGame({
+    audioUrl: 'asda',
+    config: data,
   })
+
+  const { canvasHeight, canvasWidth, colWidth, cols, hitLineY, hitWindow } =
+    gameState
+
+  const columnNotesRef = useRef<GameNote[][]>([])
+
+  const comboRef = useRef<BitmapText | null>(null)
+  const scoreRef = useRef<BitmapText | null>(null)
+
+  const notesRef = useInitNotes(columnNotesRef, dataNotes, gameState)
+
+  useInputNotes(columnNotesRef, timeRef)
 
   useTick(() => {
     if (!isGameStart) return
 
-    const g = graphicsRef.current
-    if (!g) return
+    updateTime()
 
-    const t = timeNow()
-
-    g.clear()
+    const t = timeRef.current
 
     updateNotes({
-      t,
-      config,
-      columnNotes: columnNotes.current,
-      columnIndex: columnIndex.current,
-      registerMiss,
-    })
-
-    drawNotes({
-      g,
-      t,
-      columnNotes: columnNotes.current,
-      columnIndex: columnIndex.current,
-      config,
-      getDistanceFromHitline,
+      columnNotesRef,
+      hitWindow,
+      time: t,
     })
 
     if (
@@ -96,22 +75,16 @@ export const GameScene = () => {
   })
 
   return (
-    <>
-      <pixiText
-        ref={comboRef}
-        text="0"
-        x={config.canvasWidth / 2}
-        y={config.canvasHeight / 2}
-        style={{ fill: 'white' }}
+    <pixiContainer>
+      <pixiContainer ref={notesRef} />
+      <DrawScore ref={scoreRef} />
+      <DrawCombo ref={comboRef} x={canvasWidth / 2} y={canvasHeight / 2} />
+      <DrawColumns
+        cols={cols}
+        canvasHeight={canvasHeight}
+        colWidth={colWidth}
       />
-      <pixiText
-        ref={scoreRef}
-        text="0"
-        x={10}
-        y={10}
-        style={{ fill: 'white' }}
-      />
-      <pixiGraphics ref={graphicsRef} draw={() => {}} />
-    </>
+      <DrawHitLine canvasWidth={canvasWidth} hitLineY={hitLineY} />
+    </pixiContainer>
   )
 }

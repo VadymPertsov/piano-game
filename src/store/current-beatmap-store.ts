@@ -1,21 +1,21 @@
 import { create } from 'zustand'
-
-import { Beatmap } from '@src/shared/types/beatmap'
+import { persist } from 'zustand/middleware'
 
 interface CurrentBeatmapState {
-  beatmap: Beatmap
-
-  setBeatmap: (beatmap: Beatmap) => void
+  beatmap: string | undefined
+  setBeatmap: (beatmap: string) => void
 }
 
-export const useCurrentBeatmapStore = create<CurrentBeatmapState>(set => ({
-  beatmap: {
-    title: '',
-    artist: '',
-    creator: '',
-    picture: '',
-    previewAudio: '',
-    beatmapSet: [],
-  },
-  setBeatmap: (beatmap: Beatmap) => set({ beatmap }),
-}))
+const PERSIST_STORE_NAME = 'current-beatmap-store'
+
+export const useCurrentBeatmapStore = create(
+  persist<CurrentBeatmapState>(
+    set => ({
+      beatmap: undefined,
+      setBeatmap: beatmap => set({ beatmap }),
+    }),
+    {
+      name: PERSIST_STORE_NAME,
+    }
+  )
+)

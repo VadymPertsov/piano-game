@@ -1,80 +1,46 @@
-import { Application, extend } from '@pixi/react'
-import { Container, Graphics } from 'pixi.js'
-import { useCallback } from 'react'
+import { Application } from '@pixi/react'
+import { useNavigate, useParams } from 'react-router-dom'
 
-import { useGameSettings } from './use-game-settings'
-import { GAP, SIDE_PADDING } from '../../constants/game'
-import { useGameConfigStore } from '../../stores/game-config-store'
-import { ParsedBeatmapData } from '../../types/beatmap-data'
+import { useCurrentBeatmapStore } from '@src/store/current-beatmap-store'
+
 import { GameScene } from '../game-scene'
+import { useLoadParsedBeatmap } from './use-load-parsed-beatmap'
 
 import styles from './styles.module.scss'
 
-extend({
-  Container,
-  Graphics,
-})
+export const PianoGame = () => {
+  const { title } = useParams<{ title?: string }>()
 
-interface PianoGameProps {
-  data: ParsedBeatmapData
-  audioUrl: string
-}
+  const beatmap = useCurrentBeatmapStore(s => s.beatmap)
 
-export const PianoGame = ({ data, audioUrl }: PianoGameProps) => {
-  const { width, height } = useGameSettings(data, audioUrl)
+  const navigate = useNavigate()
+
+  const { data, isLoading } = useLoadParsedBeatmap(title)
+
+  if (beatmap !== title) {
+    navigate('*', { replace: true })
+  }
+
+  if (isLoading) return 'Loading...'
+  if (!data) return 'Loading beatmap...'
 
   return (
     <div className={styles.root}>
       <Application
         antialias
-        width={width}
-        height={height}
-        background="rgba(10, 10, 15, 1)"
-        backgroundAlpha={0.7}
+        autoDensity
+        width={500}
+        height={700}
+        backgroundAlpha={0.5}
+        eventFeatures={{
+          move: true,
+          globalMove: false,
+          click: true,
+          wheel: false,
+        }}
       >
-        <pixiContainer>
-          <DrawColumns />
-          <DrawHitLine />
-          <GameScene />
-        </pixiContainer>
+        <GameScene data={data} />
       </Application>
     </div>
   )
-}
-
-const DrawColumns = () => {
-  const { cols, colWidth, canvasHeight } = useGameConfigStore(s => s.config)
-
-  const draw = useCallback(
-    (g: Graphics) => {
-      g.clear()
-
-      for (let i = 0; i < cols; i++) {
-        const x = SIDE_PADDING + i * (colWidth + GAP)
-
-        g.rect(Math.round(x), 0, colWidth, canvasHeight)
-        g.fill({ color: 0x333333, alpha: 0.2 })
-
-        g.stroke({ width: 1, color: 0x000000 })
-      }
-    },
-    [canvasHeight, colWidth, cols]
-  )
-  return <pixiGraphics draw={draw} />
-}
-
-const DrawHitLine = () => {
-  const { hitLineY, canvasWidth } = useGameConfigStore(s => s.config)
-
-  const draw = useCallback(
-    (g: Graphics) => {
-      g.clear()
-
-      g.rect(0, hitLineY, canvasWidth, 4)
-      g.fill({ color: 0xaaaaaa, alpha: 0.2 })
-    },
-    [canvasWidth, hitLineY]
-  )
-
-  return <pixiGraphics draw={draw} />
 }
