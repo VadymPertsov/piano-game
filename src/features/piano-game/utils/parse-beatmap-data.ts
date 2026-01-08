@@ -1,18 +1,23 @@
-import { HOLD_NOTE } from '../constants/game'
 import {
-  BeatmapSections,
-  ColumnNote,
   ParsedBeatmapData,
   TimingPoints,
-} from '../types/beatmap-data'
+  ColumnNote,
+} from '@src/shared/types/beatmap-prepare'
+
+import { HOLD_NOTE } from '../game-constants'
+
+type Sections =
+  | 'Metadata'
+  | 'Difficulty'
+  | 'General'
+  | 'Editor'
+  | 'TimingPoints'
+  | 'HitObjects'
 
 export const parseBeatmapData = (
-  rawText?: string,
-  canvasWidth: number = 512,
-  canvasHeight: number = 700
-): ParsedBeatmapData | undefined => {
-  if (!rawText) return
-
+  rawText: string,
+  canvasWidth: number = 512
+): ParsedBeatmapData => {
   const sections = parseRawSections(rawText)
 
   const metadata = parseSectionToMap(sections['Metadata'])
@@ -26,7 +31,7 @@ export const parseBeatmapData = (
     artist: metadata.Artist ?? '',
     version: metadata.Version ?? '',
     settings: {
-      audioLeadIn: Number(general.AudioLeadIn) + canvasHeight,
+      audioLeadIn: Number(general.AudioLeadIn),
       difficulty: {
         cs: COLS,
         ar: Number(difficulty.ApproachRate),
@@ -44,19 +49,19 @@ export const parseBeatmapData = (
   }
 }
 
-const parseRawSections = (text: string): Record<BeatmapSections, string> => {
+const parseRawSections = (text: string): Record<Sections, string> => {
   const parts = text.split(/^\[(.+)\]/gm)
 
   return parts.slice(1).reduce((acc, curr, i, array) => {
     if (i % 2 === 0) {
-      const sectionName = curr.trim() as BeatmapSections
+      const sectionName = curr.trim() as Sections
       const sectionBody = array[i + 1]?.trim() ?? ''
 
       acc[sectionName] = sectionBody
     }
 
     return acc
-  }, {} as Record<BeatmapSections, string>)
+  }, {} as Record<Sections, string>)
 }
 
 const parseSectionToMap = (sectionText: string = '') => {

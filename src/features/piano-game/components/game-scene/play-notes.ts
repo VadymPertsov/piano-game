@@ -1,10 +1,9 @@
-import {
-  ColumnNote,
-  JudgePoints,
-  JudgeWindows,
-  NoteHighlight,
-  RegisterJudge,
-} from '../../types/beatmap-data'
+import { RefObject } from 'react'
+
+import { ColumnNote } from '@src/shared/types/beatmap-prepare'
+
+import { JudgeWindows, NoteHighlight, RegisterJudge } from '../../types'
+import { getJudgement } from '../../utils/game-math'
 
 export const pressNote = ({
   activeHold,
@@ -13,10 +12,9 @@ export const pressNote = ({
   columnIndex,
   columnNotes,
   judgeWindows,
-  getJudgement,
   registerJudge,
   registerMiss,
-  currentTime,
+  timeRef,
 }: {
   column: number
   activeHold: (ColumnNote | null)[]
@@ -24,9 +22,8 @@ export const pressNote = ({
   columnIndex: number[]
   columnHighlight: NoteHighlight[]
   judgeWindows: JudgeWindows
-  currentTime: number
+  timeRef: RefObject<number>
   registerMiss: (note: ColumnNote, isTail?: boolean) => void
-  getJudgement: (delta: number) => JudgePoints
   registerJudge: (value: RegisterJudge) => void
 }) => {
   if (activeHold[column]) return
@@ -39,7 +36,7 @@ export const pressNote = ({
     return
   }
 
-  const delta = currentTime - note.startTime
+  const delta = timeRef.current - note.startTime
   const hitWindow = judgeWindows[0]
 
   if (delta < -hitWindow) {
@@ -59,7 +56,7 @@ export const pressNote = ({
     return
   }
 
-  const judge = getJudgement(delta)
+  const judge = getJudgement(delta, judgeWindows)
   if (judge === 0) {
     registerMiss(note)
     note.missed = true
@@ -87,17 +84,15 @@ export const releaseNote = ({
   activeHold,
   column,
   judgeWindows,
-  getJudgement,
   registerJudge,
   registerMiss,
-  currentTime,
+  timeRef,
 }: {
   column: number
   activeHold: (ColumnNote | null)[]
   judgeWindows: JudgeWindows
-  currentTime: number
+  timeRef: RefObject<number>
   registerMiss: (note: ColumnNote, isTail?: boolean) => void
-  getJudgement: (delta: number) => JudgePoints
   registerJudge: (value: RegisterJudge) => void
 }) => {
   const note = activeHold[column]
@@ -107,13 +102,13 @@ export const releaseNote = ({
   note.holding = false
   activeHold[column] = null
 
-  const delta = currentTime - note.endTime
+  const delta = timeRef.current - note.endTime
   const hitWindow = judgeWindows[0]
 
   if (Math.abs(delta) > hitWindow) {
     registerMiss(note, true)
   } else {
-    const judge = getJudgement(delta)
+    const judge = getJudgement(delta, judgeWindows)
     if (judge !== 0) {
       registerJudge(judge)
       note.tailHit = true

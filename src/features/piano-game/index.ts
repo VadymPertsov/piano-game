@@ -1,1 +1,1 @@
-export { PreloadGame } from './components/preload-game'
+export { PianoGame } from './components/piano-game'

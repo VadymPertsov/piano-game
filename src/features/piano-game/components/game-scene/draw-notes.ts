@@ -1,100 +1,100 @@
-import { Graphics } from 'pixi.js'
+// import { Graphics } from 'pixi.js'
 
-import { SIDE_PADDING, GAP } from '../../constants/game'
-import { GameConfig, GameState } from '../../stores/game-config-store'
-import { ColumnNote } from '../../types/beatmap-data'
-import { white } from '../../utils/white-texture'
+// import { ColumnNote } from '@src/shared/types/beatmap-prepare'
 
-export const drawNotes = ({
-  g,
-  t,
-  config,
-  columnIndex,
-  columnNotes,
-  getDistanceFromHitline,
-}: {
-  g: Graphics
-  t: number
-  config: GameConfig
-  columnNotes: ColumnNote[][]
-  columnIndex: number[]
-  getDistanceFromHitline: GameState['getDistanceFromHitline']
-}) => {
-  const {
-    canvasHeight,
-    colWidth,
-    cols,
-    hitLineY,
-    judgeWindows,
-    noteHeight,
-    preempt,
-  } = config
+// import { SIDE_PADDING, GAP } from '../../game-constants'
+// import { WHITE } from '../../utils/white-texture'
 
-  const hitWindow = judgeWindows[0]
+// export const drawNotes = ({
+//   g,
+//   t,
+//   config,
+//   columnIndex,
+//   columnNotes,
+//   getDistanceFromHitline,
+// }: {
+//   g: Graphics
+//   t: number
+//   config: GameConfig
+//   columnNotes: ColumnNote[][]
+//   columnIndex: number[]
+//   getDistanceFromHitline: GameState['getDistanceFromHitline']
+// }) => {
+//   const {
+//     canvasHeight,
+//     colWidth,
+//     cols,
+//     hitLineY,
+//     judgeWindows,
+//     noteHeight,
+//     preempt,
+//   } = config
 
-  for (let col = 0; col < cols; col++) {
-    const notes = columnNotes[col]
-    const start = columnIndex[col]
+//   const hitWindow = judgeWindows[0]
 
-    if (!notes || start === undefined) continue
+//   for (let col = 0; col < cols; col++) {
+//     const notes = columnNotes[col]
+//     const start = columnIndex[col]
 
-    for (let i = notes.length - 1; i >= start; i--) {
-      const note = notes[i]
-      if (!note) continue
+//     if (!notes || start === undefined) continue
 
-      if (note.hit && note.endTime === undefined) continue
+//     for (let i = notes.length - 1; i >= start; i--) {
+//       const note = notes[i]
+//       if (!note) continue
 
-      const dt = note.startTime - t
-      if (dt > preempt) continue
+//       if (note.hit && note.endTime === undefined) continue
 
-      if (
-        (note.endTime !== undefined && t > note.endTime + hitWindow) ||
-        (note.endTime === undefined &&
-          t > note.startTime + hitWindow &&
-          !note.missed)
-      )
-        continue
+//       const dt = note.startTime - t
+//       if (dt > preempt) continue
 
-      const headY = hitLineY - getDistanceFromHitline(note.startTime, t)
-      const x = SIDE_PADDING + note.column * (colWidth + GAP)
+//       if (
+//         (note.endTime !== undefined && t > note.endTime + hitWindow) ||
+//         (note.endTime === undefined &&
+//           t > note.startTime + hitWindow &&
+//           !note.missed)
+//       )
+//         continue
 
-      if (note.endTime !== undefined) {
-        const tailY = hitLineY - getDistanceFromHitline(note.endTime, t)
+//       const headY = hitLineY - getDistanceFromHitline(note.startTime, t)
+//       const x = SIDE_PADDING + note.column * (colWidth + GAP)
 
-        const top = Math.min(headY, tailY)
-        const bottom = Math.max(headY, tailY)
+//       if (note.endTime !== undefined) {
+//         const tailY = hitLineY - getDistanceFromHitline(note.endTime, t)
 
-        if (bottom < -noteHeight || top > canvasHeight + noteHeight) continue
+//         const top = Math.min(headY, tailY)
+//         const bottom = Math.max(headY, tailY)
 
-        drawHoldNote(g, x, headY, top, bottom, colWidth, noteHeight)
-      } else {
-        if (headY < -noteHeight || headY > canvasHeight + noteHeight) continue
+//         if (bottom < -noteHeight || top > canvasHeight + noteHeight) continue
 
-        drawTapNote(g, x, headY, colWidth, noteHeight)
-      }
-    }
-  }
-}
+//         drawHoldNote(g, x, headY, top, bottom, colWidth, noteHeight)
+//       } else {
+//         if (headY < -noteHeight || headY > canvasHeight + noteHeight) continue
 
-const drawHoldNote = (
-  g: Graphics,
-  x: number,
-  y: number,
-  top: number,
-  bottom: number,
-  colWidth: number,
-  noteHeight: number
-) => {
-  g.texture(white, 0x555, x, top, colWidth, bottom - top)
-  g.texture(white, 0x42a5f5, x, y - noteHeight, colWidth, noteHeight)
-}
+//         drawTapNote(g, x, headY, colWidth, noteHeight)
+//       }
+//     }
+//   }
+// }
 
-const drawTapNote = (
-  g: Graphics,
-  x: number,
-  y: number,
-  colWidth: number,
-  noteHeight: number
-) => {
-  g.texture(white, 0x42a5f5, x, y - noteHeight, colWidth, noteHeight)
-}
+// const drawHoldNote = (
+//   g: Graphics,
+//   x: number,
+//   y: number,
+//   top: number,
+//   bottom: number,
+//   colWidth: number,
+//   noteHeight: number
+// ) => {
+//   g.texture(WHITE, 0x555, x, top, colWidth, bottom - top)
+//   g.texture(WHITE, 0x42a5f5, x, y - noteHeight, colWidth, noteHeight)
+// }
+
+// const drawTapNote = (
+//   g: Graphics,
+//   x: number,
+//   y: number,
+//   colWidth: number,
+//   noteHeight: number
+// ) => {
+//   g.texture(WHITE, 0x42a5f5, x, y - noteHeight, colWidth, noteHeight)
+// }

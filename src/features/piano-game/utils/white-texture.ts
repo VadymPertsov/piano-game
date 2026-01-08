@@ -1,3 +1,3 @@
 import { Texture } from 'pixi.js'
 
-export const white = Texture.WHITE
+export const WHITE = Texture.WHITE

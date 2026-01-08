@@ -1,0 +1,14 @@
+.root {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  height: 100%;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: rem(15px);
+  padding: rem(25px);
+  overflow-x: hidden;
+  overflow-y: auto;
+}
