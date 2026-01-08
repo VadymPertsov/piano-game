@@ -6,6 +6,8 @@ export type JudgeWindows = {
   [K in JudgePoints]: number
 }
 
+export type RegisterJudge = Exclude<JudgePoints, 0>
+
 export type NoteHighlight = 'transparent' | 'click' | 'miss' | 'tap'
 
 export interface SVSegment {
@@ -29,7 +31,7 @@ export interface GameState {
   judgeWindows: JudgeWindows
   hitWindow: number
   registerMiss: () => void
-  registerJudge: (value: JudgePoints) => void
+  registerJudge: (value: RegisterJudge) => void
 }
 
 export interface TapNote {

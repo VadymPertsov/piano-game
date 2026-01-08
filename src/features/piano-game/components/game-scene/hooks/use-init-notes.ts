@@ -1,11 +1,11 @@
 import { Container } from 'pixi.js'
 import { RefObject, useEffect, useRef } from 'react'
 
+import { GameNote, GameState } from '@src/features/piano-game/types'
 import { ColumnNote } from '@src/shared/types/beatmap-prepare'
 
-import { holdNote } from './hold-note'
-import { tapNote } from './tap-note'
-import { GameNote, GameState } from '../../types'
+import { holdNote } from '../hold-note'
+import { tapNote } from '../tap-note'
 
 export const useInitNotes = (
   columnNotesRef: RefObject<GameNote[][]>,

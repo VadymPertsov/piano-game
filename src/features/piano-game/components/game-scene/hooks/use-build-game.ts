@@ -1,10 +1,16 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 
+import {
+  GAP,
+  SCROLL_SCALE,
+  SIDE_PADDING,
+} from '@src/features/piano-game/game-constants'
+import { RegisterJudge, GameState } from '@src/features/piano-game/types'
+import {
+  buildSVTimeline,
+  makeJudgeWindows,
+} from '@src/features/piano-game/utils/game-math'
 import { ParsedBeatmapData } from '@src/shared/types/beatmap-prepare'
-
-import { GAP, SCROLL_SCALE, SIDE_PADDING } from '../../game-constants'
-import { GameState, JudgePoints } from '../../types'
-import { buildSVTimeline, makeJudgeWindows } from '../../utils/game-math'
 
 interface UseBuildGameProps {
   audioUrl: string
@@ -22,6 +28,12 @@ export const useBuildGame = ({ audioUrl, config }: UseBuildGameProps) => {
 
   const startTimeRef = useRef<number>(0)
   const currentTimeRef = useRef<number>(0)
+  const gameResults = useRef({
+    currentCombo: 0,
+    maxCombo: 0,
+    score: 0,
+    summary: { '320': 0, '300': 0, '200': 0, '100': 0, '50': 0, '0': 0 },
+  })
 
   const audio = useMemo(() => new Audio(audioUrl), [audioUrl])
 
@@ -57,13 +69,6 @@ export const useBuildGame = ({ audioUrl, config }: UseBuildGameProps) => {
     }
   }, [audio, audioLeadIn, isGameStart])
 
-  const gameResults = useRef({
-    currentCombo: 0,
-    maxCombo: 0,
-    score: 0,
-    summary: { '320': 0, '300': 0, '200': 0, '100': 0, '50': 0, '0': 0 },
-  })
-
   const COLS = difficulty.cs
   const WIDTH = COLS * 128
   const HEIGHT = 700
@@ -74,7 +79,7 @@ export const useBuildGame = ({ audioUrl, config }: UseBuildGameProps) => {
   const NOTE_HEIGHT = Math.max(15, 30 * BASE_PIXELS_PER_MS)
   const PREEMPT = HIT_LINE_Y / BASE_PIXELS_PER_MS
 
-  const registerJudge = (value: JudgePoints) => {
+  const registerJudge = (value: RegisterJudge) => {
     // console.log(value)
 
     gameResults.current.summary[value]++

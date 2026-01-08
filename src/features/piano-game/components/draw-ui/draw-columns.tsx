@@ -1,4 +1,4 @@
-import { GAP, SIDE_PADDING } from '../../game-constants'
+import { SIDE_PADDING, GAP } from '../../game-constants'
 import { WHITE } from '../../utils/white-texture'
 
 interface DrawColumnsProps {

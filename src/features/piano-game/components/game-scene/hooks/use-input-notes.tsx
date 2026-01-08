@@ -1,7 +1,7 @@
 import { RefObject, useCallback, useEffect } from 'react'
 
-import { KEYS } from '../../game-constants'
-import { GameNote } from '../../types'
+import { KEYS } from '@src/features/piano-game/game-constants'
+import { GameNote } from '@src/features/piano-game/types'
 
 export const useInputNotes = (
   columnNotesRef: RefObject<GameNote[][]>,

@@ -4,12 +4,12 @@ import { useRef } from 'react'
 
 import { ParsedBeatmapData } from '@src/shared/types/beatmap-prepare'
 
-import { updateNotes } from './update-notes'
-import { useBuildGame } from './use-build-game'
-import { useInitNotes } from './use-init-notes'
-import { useInputNotes } from './use-input-notes'
-import { GameNote } from '../../types'
 import { DrawColumns, DrawCombo, DrawHitLine, DrawScore } from '../draw-ui'
+import { useBuildGame } from './hooks/use-build-game'
+import { useInitNotes } from './hooks/use-init-notes'
+import { useInputNotes } from './hooks/use-input-notes'
+import { updateNotes } from './update-notes'
+import { GameNote } from '../../types'
 
 extend({
   BitmapText,

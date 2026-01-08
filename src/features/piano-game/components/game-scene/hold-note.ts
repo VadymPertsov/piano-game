@@ -28,9 +28,13 @@ export const holdNote = (
       shouldRemove = true
 
       const judge = getJudgement(delta, game.judgeWindows)
-      console.log('judge', judge)
 
-      game.registerJudge(judge)
+      if (judge === 0) {
+        game.registerMiss()
+        console.log('miss miss')
+      } else {
+        game.registerJudge(judge)
+      }
 
       return
     }
@@ -40,7 +44,6 @@ export const holdNote = (
     const delta = data.endTime - now
 
     if (delta < -game.hitWindow) {
-      console.log('miss HOLD')
       game.registerMiss()
       shouldRemove = true
     }
