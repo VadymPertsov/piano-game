@@ -47,7 +47,6 @@ const AccordionItem = (item: ImportedBeatmap) => {
 
   if (isLoading) return 'Loading...'
   if (!data?.beatmaps || !data?.beatmaps.length) return 'No maps here'
-  console.log(data)
 
   return data.beatmaps.map(map => (
     <button

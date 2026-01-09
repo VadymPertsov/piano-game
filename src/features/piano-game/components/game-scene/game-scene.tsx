@@ -30,7 +30,7 @@ export const GameScene = ({ data }: GameSceneProps) => {
     columnNotes: dataNotes,
     gameResults,
   } = useBuildGame({
-    audioUrl: 'asda',
+    audioUrl: data.audioUrl,
     config: data,
   })
 

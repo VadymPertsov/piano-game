@@ -35,39 +35,43 @@ export const useBuildGame = ({ audioUrl, config }: UseBuildGameProps) => {
     summary: { '320': 0, '300': 0, '200': 0, '100': 0, '50': 0, '0': 0 },
   })
 
-  const audio = useMemo(() => new Audio(audioUrl), [audioUrl])
+  const audioRef = useRef<HTMLAudioElement | null>(null)
 
   const updateTime = () => {
-    if (isGameStart) {
-      if (audio.currentTime > 0) {
-        currentTimeRef.current = audio.currentTime * 1000
-        return
-      }
+    if (!isGameStart || !audioRef.current) return
 
-      currentTimeRef.current =
-        performance.now() - startTimeRef.current - audioLeadIn
-    }
+    currentTimeRef.current = audioRef.current.currentTime * 1000
   }
+
+  useEffect(() => {
+    const audio = new Audio(audioUrl)
+    audioRef.current = audio
+
+    return () => {
+      audio.pause()
+      audio.currentTime = 0
+      URL.revokeObjectURL(audioUrl)
+    }
+  }, [audioUrl])
 
   useEffect(() => {
     if (isGameStart) return
 
     const onKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'g') {
+        startTimeRef.current = performance.now()
         setIsGameStart(true)
 
-        startTimeRef.current = performance.now()
+        if (!audioRef.current) return
 
-        audio.currentTime = 0
-        audio.play()
+        audioRef.current.currentTime = 0
+        audioRef.current.play().catch(console.error)
       }
     }
 
     window.addEventListener('keydown', onKeyDown)
-    return () => {
-      window.removeEventListener('keydown', onKeyDown)
-    }
-  }, [audio, audioLeadIn, isGameStart])
+    return () => window.removeEventListener('keydown', onKeyDown)
+  }, [isGameStart])
 
   const COLS = difficulty.cs
   const WIDTH = COLS * 128

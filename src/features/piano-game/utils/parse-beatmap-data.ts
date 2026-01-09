@@ -2,7 +2,6 @@ import {
   ParsedBeatmapData,
   TimingPoints,
   ColumnNote,
-  SavedRawBeatmap,
 } from '@src/shared/types/beatmap-prepare'
 
 import { HOLD_NOTE } from '../game-constants'
@@ -15,17 +14,18 @@ type Sections =
   | 'TimingPoints'
   | 'HitObjects'
 
-interface ParseBeatmapData extends Omit<SavedRawBeatmap, 'beatmap'> {
+interface ParseBeatmapData {
   rawBeatmap: string
+  audioUrl: string
+  bgUrl: string
   canvasWidth?: number
 }
 
 export const parseBeatmapData = ({
-  localTitle,
   rawBeatmap,
-  audios,
   canvasWidth = 500,
-  pictures,
+  audioUrl,
+  bgUrl,
 }: ParseBeatmapData): ParsedBeatmapData => {
   const sections = parseRawSections(rawBeatmap)
 
@@ -36,9 +36,8 @@ export const parseBeatmapData = ({
   const COLS = Number(difficulty.CircleSize)
 
   return {
-    localTitle,
-    audios,
-    pictures,
+    audioUrl,
+    bgUrl,
     title: metadata.Title ?? '',
     artist: metadata.Artist ?? '',
     version: metadata.Version ?? '',

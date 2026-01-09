@@ -1,6 +1,7 @@
 import { Application } from '@pixi/react'
 import { useNavigate, useParams } from 'react-router-dom'
 
+import { useBodyBackground } from '@src/shared/hooks/use-body-background'
 import { useCurrentBeatmapStore } from '@src/store/current-beatmap-store'
 
 import { GameScene } from '../game-scene'
@@ -16,7 +17,7 @@ export const PianoGame = () => {
   const navigate = useNavigate()
 
   const { data, isLoading } = useLoadParsedBeatmap(title)
-  console.log(data)
+  useBodyBackground(data?.bgUrl)
 
   if (beatmap !== title) {
     navigate('*', { replace: true })

@@ -10,7 +10,9 @@ export interface TimingPoints {
   uninherited: boolean
 }
 
-export interface ParsedBeatmapData extends Omit<SavedRawBeatmap, 'beatmap'> {
+export interface ParsedBeatmapData {
+  audioUrl: string
+  bgUrl: string
   title: string
   artist: string
   version: string
