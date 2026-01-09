@@ -1,14 +1,14 @@
 import { beatmapDB } from './beatmap-db'
-import { ImportedBeatmapSet, ParsedBeatmapData } from '../types/beatmap-prepare'
+import { ParsedBeatmapData, SavedRawBeatmap } from '../types/beatmap-prepare'
 
-export const saveRawBeatmap = async (item: ImportedBeatmapSet) => {
+export const saveRawBeatmap = async (item: SavedRawBeatmap) => {
   const db = await beatmapDB
-  await db.put('raw', item.data.buffer, item.title)
+  await db.put('raw', item, item.localTitle)
 }
 
 export const loadRawBeatmap = async (
-  title: ImportedBeatmapSet['title']
-): Promise<ImportedBeatmapSet['data'] | undefined> => {
+  title: SavedRawBeatmap['localTitle']
+): Promise<SavedRawBeatmap | undefined> => {
   const db = await beatmapDB
   return db.get('raw', title)
 }

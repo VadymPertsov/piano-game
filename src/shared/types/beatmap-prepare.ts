@@ -10,7 +10,7 @@ export interface TimingPoints {
   uninherited: boolean
 }
 
-export interface ParsedBeatmapData {
+export interface ParsedBeatmapData extends Omit<SavedRawBeatmap, 'beatmap'> {
   title: string
   artist: string
   version: string
@@ -35,7 +35,20 @@ export interface ImportedBeatmap {
   urlFn: () => Promise<string>
 }
 
-export interface ImportedBeatmapSet {
+export interface ImportedItem {
   title: string
   data: Uint8Array<ArrayBufferLike>
+}
+
+export interface ImportedBeatmapSet {
+  beatmaps: ImportedItem[]
+  audios: ImportedItem[]
+  pictures: ImportedItem[]
+}
+
+export interface SavedRawBeatmap {
+  localTitle: string
+  beatmap: Uint8Array<ArrayBufferLike>
+  audios: ImportedItem[]
+  pictures: ImportedItem[]
 }

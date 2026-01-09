@@ -23,7 +23,12 @@ export const useLoadParsedBeatmap = (title?: string) => {
       if (!raw) return
 
       const prepared = prepareBeatmapData(raw)
-      const parsed = parseBeatmapData(prepared)
+      const parsed = parseBeatmapData({
+        rawBeatmap: prepared,
+        audios: raw.audios,
+        pictures: raw.pictures,
+        localTitle: raw.localTitle,
+      })
 
       await saveParsedBeatmap(parsed)
 

@@ -16,6 +16,7 @@ export const PianoGame = () => {
   const navigate = useNavigate()
 
   const { data, isLoading } = useLoadParsedBeatmap(title)
+  console.log(data)
 
   if (beatmap !== title) {
     navigate('*', { replace: true })

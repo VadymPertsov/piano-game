@@ -6,7 +6,7 @@ import { ROUTES } from '@src/shared/constants/routes'
 import { saveRawBeatmap } from '@src/shared/db/beatmap-actions'
 import {
   ImportedBeatmap,
-  ImportedBeatmapSet,
+  SavedRawBeatmap,
 } from '@src/shared/types/beatmap-prepare'
 import { useCurrentBeatmapStore } from '@src/store/current-beatmap-store'
 
@@ -32,27 +32,35 @@ export const BeatmapItem = memo(({ item }: BeatmapItemProps) => {
 })
 
 const AccordionItem = (item: ImportedBeatmap) => {
-  const beatmapSet = useParseBeatmapSet(item)
+  const { data, isLoading } = useParseBeatmapSet(item)
   const setBeatmap = useCurrentBeatmapStore(s => s.setBeatmap)
 
   const navigate = useNavigate()
 
-  const handlePickBeatmap = async (map: ImportedBeatmapSet) => {
+  const handlePickBeatmap = async (map: SavedRawBeatmap) => {
     await saveRawBeatmap(map)
 
-    setBeatmap(map.title)
+    setBeatmap(map.localTitle)
 
-    navigate(`${ROUTES.play}/${map.title}`)
+    navigate(`${ROUTES.play}/${map.localTitle}`)
   }
 
-  if (beatmapSet.isLoading) return 'Loading...'
-  if (!beatmapSet.data || !beatmapSet.data.length) return 'No maps here'
+  if (isLoading) return 'Loading...'
+  if (!data?.beatmaps || !data?.beatmaps.length) return 'No maps here'
+  console.log(data)
 
-  return beatmapSet.data.map(map => (
+  return data.beatmaps.map(map => (
     <button
       key={map.title}
       className={styles.item}
-      onClick={() => handlePickBeatmap(map)}
+      onClick={() =>
+        handlePickBeatmap({
+          localTitle: map.title,
+          beatmap: map.data,
+          audios: data.audios,
+          pictures: data.pictures,
+        })
+      }
     >
       {map.title}
     </button>
