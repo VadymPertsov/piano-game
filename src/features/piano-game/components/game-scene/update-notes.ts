@@ -1,13 +1,12 @@
 import { RefObject } from 'react'
 
-import { GameNote } from '../../types'
+import { GameNote } from './types'
 
 export const updateNotes = ({
   columnNotesRef,
   time,
 }: {
   columnNotesRef: RefObject<GameNote[][]>
-  hitWindow: number
   time: number
 }) => {
   for (const col of columnNotesRef.current) {

@@ -1,6 +1,9 @@
-import { TimingPoints } from '@src/shared/types/beatmap-prepare'
-
-import { JudgePoints, JudgeWindows, SVSegment } from '../types'
+import {
+  JudgePoints,
+  JudgeWindows,
+  SVSegment,
+  TimingPoints,
+} from '@src/shared/types/beatmap-prepare'
 
 export const makeJudgeWindows = (od: number): JudgeWindows => ({
   '320': 16,

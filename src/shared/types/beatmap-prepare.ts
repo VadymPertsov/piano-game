@@ -10,6 +10,22 @@ export interface TimingPoints {
   uninherited: boolean
 }
 
+export type JudgePoints = 320 | 300 | 200 | 100 | 50 | 0
+
+export type JudgeWindows = {
+  [K in JudgePoints]: number
+}
+
+export type RegisterJudge = Exclude<JudgePoints, 0>
+
+export interface SVSegment {
+  from: number
+  to: number
+  sv: number
+  pxPerMs: number
+  cumulativePx: number
+}
+
 export interface ParsedBeatmapData {
   audioUrl: string
   bgUrl: string

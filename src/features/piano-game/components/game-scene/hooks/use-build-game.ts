@@ -5,12 +5,16 @@ import {
   SCROLL_SCALE,
   SIDE_PADDING,
 } from '@src/features/piano-game/game-constants'
-import { RegisterJudge, GameState } from '@src/features/piano-game/types'
 import {
   buildSVTimeline,
   makeJudgeWindows,
 } from '@src/features/piano-game/utils/game-math'
-import { ParsedBeatmapData } from '@src/shared/types/beatmap-prepare'
+import {
+  ParsedBeatmapData,
+  RegisterJudge,
+} from '@src/shared/types/beatmap-prepare'
+
+import { GameState } from '../types'
 
 interface UseBuildGameProps {
   audioUrl: string
@@ -42,6 +46,14 @@ export const useBuildGame = ({
     summary: { '320': 0, '300': 0, '200': 0, '100': 0, '50': 0, '0': 0 },
   })
 
+  const COLS = difficulty.cs
+  const BASE_PIXELS_PER_MS =
+    difficulty.sliderMultiplier * editor.distanceSpacing * SCROLL_SCALE
+  const COL_WIDTH = (canvasWidth - SIDE_PADDING * 2 - GAP * (COLS - 1)) / COLS
+  const HIT_LINE_Y = canvasHeight - 100
+  const NOTE_HEIGHT = Math.max(15, 30 * BASE_PIXELS_PER_MS)
+  const PREEMPT = HIT_LINE_Y / BASE_PIXELS_PER_MS
+
   const audioRef = useRef<HTMLAudioElement | undefined>(undefined)
 
   useEffect(() => {
@@ -55,14 +67,6 @@ export const useBuildGame = ({
       URL.revokeObjectURL(audioUrl)
     }
   }, [audioUrl])
-
-  const COLS = difficulty.cs
-  const BASE_PIXELS_PER_MS =
-    difficulty.sliderMultiplier * editor.distanceSpacing * SCROLL_SCALE
-  const COL_WIDTH = (canvasWidth - SIDE_PADDING * 2 - GAP * (COLS - 1)) / COLS
-  const HIT_LINE_Y = canvasHeight - 100
-  const NOTE_HEIGHT = Math.max(15, 30 * BASE_PIXELS_PER_MS)
-  const PREEMPT = HIT_LINE_Y / BASE_PIXELS_PER_MS
 
   useEffect(() => {
     if (isGameStart) return
