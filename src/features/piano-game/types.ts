@@ -20,8 +20,6 @@ export interface SVSegment {
 
 export interface GameState {
   cols: number
-  canvasWidth: number
-  canvasHeight: number
   basePixelsPerMs: number
   colWidth: number
   hitLineY: number

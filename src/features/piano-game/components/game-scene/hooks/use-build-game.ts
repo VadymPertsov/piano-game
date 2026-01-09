@@ -15,9 +15,16 @@ import { ParsedBeatmapData } from '@src/shared/types/beatmap-prepare'
 interface UseBuildGameProps {
   audioUrl: string
   config: ParsedBeatmapData
+  canvasHeight: number
+  canvasWidth: number
 }
 
-export const useBuildGame = ({ audioUrl, config }: UseBuildGameProps) => {
+export const useBuildGame = ({
+  audioUrl,
+  config,
+  canvasHeight,
+  canvasWidth,
+}: UseBuildGameProps) => {
   const {
     columnNotes,
     timings,
@@ -35,16 +42,11 @@ export const useBuildGame = ({ audioUrl, config }: UseBuildGameProps) => {
     summary: { '320': 0, '300': 0, '200': 0, '100': 0, '50': 0, '0': 0 },
   })
 
-  const audioRef = useRef<HTMLAudioElement | null>(null)
-
-  const updateTime = () => {
-    if (!isGameStart || !audioRef.current) return
-
-    currentTimeRef.current = audioRef.current.currentTime * 1000
-  }
+  const audioRef = useRef<HTMLAudioElement | undefined>(undefined)
 
   useEffect(() => {
     const audio = new Audio(audioUrl)
+    audio.preload = 'auto'
     audioRef.current = audio
 
     return () => {
@@ -54,34 +56,50 @@ export const useBuildGame = ({ audioUrl, config }: UseBuildGameProps) => {
     }
   }, [audioUrl])
 
+  const COLS = difficulty.cs
+  const BASE_PIXELS_PER_MS =
+    difficulty.sliderMultiplier * editor.distanceSpacing * SCROLL_SCALE
+  const COL_WIDTH = (canvasWidth - SIDE_PADDING * 2 - GAP * (COLS - 1)) / COLS
+  const HIT_LINE_Y = canvasHeight - 100
+  const NOTE_HEIGHT = Math.max(15, 30 * BASE_PIXELS_PER_MS)
+  const PREEMPT = HIT_LINE_Y / BASE_PIXELS_PER_MS
+
   useEffect(() => {
     if (isGameStart) return
 
     const onKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'g') {
-        startTimeRef.current = performance.now()
+      if (e.key === 'g' && audioRef.current) {
         setIsGameStart(true)
 
-        if (!audioRef.current) return
-
+        startTimeRef.current = performance.now()
         audioRef.current.currentTime = 0
-        audioRef.current.play().catch(console.error)
+
+        setTimeout(() => audioRef.current?.play(), audioLeadIn)
       }
     }
 
     window.addEventListener('keydown', onKeyDown)
     return () => window.removeEventListener('keydown', onKeyDown)
-  }, [isGameStart])
+  }, [isGameStart, audioLeadIn])
 
-  const COLS = difficulty.cs
-  const WIDTH = COLS * 128
-  const HEIGHT = 700
-  const BASE_PIXELS_PER_MS =
-    difficulty.sliderMultiplier * editor.distanceSpacing * SCROLL_SCALE
-  const COL_WIDTH = (WIDTH - SIDE_PADDING * 2 - GAP * (COLS - 1)) / COLS
-  const HIT_LINE_Y = HEIGHT - 100
-  const NOTE_HEIGHT = Math.max(15, 30 * BASE_PIXELS_PER_MS)
-  const PREEMPT = HIT_LINE_Y / BASE_PIXELS_PER_MS
+  const updateTime = () => {
+    if (!isGameStart) {
+      currentTimeRef.current = -audioLeadIn
+      return
+    }
+
+    if (
+      audioRef.current &&
+      audioRef.current.currentTime > 0 &&
+      currentTimeRef.current < audioRef.current.currentTime * 1000
+    ) {
+      currentTimeRef.current = audioRef.current.currentTime * 1000
+      return
+    }
+
+    currentTimeRef.current =
+      performance.now() - startTimeRef.current - audioLeadIn
+  }
 
   const registerJudge = (value: RegisterJudge) => {
     // console.log(value)
@@ -114,8 +132,6 @@ export const useBuildGame = ({ audioUrl, config }: UseBuildGameProps) => {
 
   const gameState: GameState = {
     cols: COLS,
-    canvasWidth: WIDTH,
-    canvasHeight: HEIGHT,
     basePixelsPerMs: BASE_PIXELS_PER_MS,
     colWidth: COL_WIDTH,
     hitLineY: HIT_LINE_Y,

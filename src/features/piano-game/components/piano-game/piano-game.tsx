@@ -1,4 +1,5 @@
 import { Application } from '@pixi/react'
+import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 
 import { useBodyBackground } from '@src/shared/hooks/use-body-background'
@@ -16,33 +17,57 @@ export const PianoGame = () => {
 
   const navigate = useNavigate()
 
+  const [canvasHeight, setCanvasHeight] = useState<number | null>(null)
+  const canvasRef = useRef<HTMLDivElement | null>(null)
+
   const { data, isLoading } = useLoadParsedBeatmap(title)
+
   useBodyBackground(data?.bgUrl)
 
-  if (beatmap !== title) {
-    navigate('*', { replace: true })
-  }
+  useEffect(() => {
+    if (beatmap !== title) {
+      navigate('*', { replace: true })
+    }
+  }, [beatmap, title, navigate])
 
-  if (isLoading) return 'Loading...'
-  if (!data) return 'Loading beatmap...'
+  useLayoutEffect(() => {
+    const updateSize = () => {
+      if (canvasRef.current) {
+        setCanvasHeight(canvasRef.current.clientHeight)
+      }
+    }
+    updateSize()
+    window.addEventListener('resize', updateSize)
+    return () => window.removeEventListener('resize', updateSize)
+  }, [])
+
+  const canvasWidth = data ? data.settings.difficulty.cs * 128 : 0
 
   return (
-    <div className={styles.root}>
-      <Application
-        antialias
-        autoDensity
-        width={500}
-        height={700}
-        backgroundAlpha={0.5}
-        eventFeatures={{
-          move: true,
-          globalMove: false,
-          click: true,
-          wheel: false,
-        }}
-      >
-        <GameScene data={data} />
-      </Application>
+    <div className={styles.root} ref={canvasRef}>
+      {isLoading || !data || !canvasHeight ? (
+        <>Loading beatmap and preparing canvas...</>
+      ) : (
+        <Application
+          antialias
+          autoDensity
+          width={canvasWidth}
+          height={canvasHeight}
+          backgroundAlpha={0.5}
+          eventFeatures={{
+            move: true,
+            globalMove: false,
+            click: true,
+            wheel: false,
+          }}
+        >
+          <GameScene
+            data={data}
+            canvasWidth={canvasWidth}
+            canvasHeight={canvasHeight}
+          />
+        </Application>
+      )}
     </div>
   )
 }

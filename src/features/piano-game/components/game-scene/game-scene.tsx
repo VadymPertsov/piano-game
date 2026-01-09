@@ -19,9 +19,15 @@ extend({
 
 interface GameSceneProps {
   data: ParsedBeatmapData
+  canvasHeight: number
+  canvasWidth: number
 }
 
-export const GameScene = ({ data }: GameSceneProps) => {
+export const GameScene = ({
+  data,
+  canvasHeight,
+  canvasWidth,
+}: GameSceneProps) => {
   const {
     isGameStart,
     timeRef,
@@ -32,10 +38,11 @@ export const GameScene = ({ data }: GameSceneProps) => {
   } = useBuildGame({
     audioUrl: data.audioUrl,
     config: data,
+    canvasHeight,
+    canvasWidth,
   })
 
-  const { canvasHeight, canvasWidth, colWidth, cols, hitLineY, hitWindow } =
-    gameState
+  const { colWidth, cols, hitLineY, hitWindow } = gameState
 
   const columnNotesRef = useRef<GameNote[][]>([])
 

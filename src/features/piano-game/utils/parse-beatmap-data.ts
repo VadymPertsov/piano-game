@@ -19,11 +19,13 @@ interface ParseBeatmapData {
   audioUrl: string
   bgUrl: string
   canvasWidth?: number
+  canvasHeight?: number
 }
 
 export const parseBeatmapData = ({
   rawBeatmap,
   canvasWidth = 500,
+  canvasHeight = 700,
   audioUrl,
   bgUrl,
 }: ParseBeatmapData): ParsedBeatmapData => {
@@ -42,7 +44,7 @@ export const parseBeatmapData = ({
     artist: metadata.Artist ?? '',
     version: metadata.Version ?? '',
     settings: {
-      audioLeadIn: Number(general.AudioLeadIn),
+      audioLeadIn: Number(general.AudioLeadIn) + canvasHeight,
       difficulty: {
         cs: COLS,
         ar: Number(difficulty.ApproachRate),
