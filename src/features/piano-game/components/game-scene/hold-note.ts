@@ -1,26 +1,40 @@
 import { Sprite } from 'pixi.js'
 
+import { GameState } from './types'
 import { GAP, SIDE_PADDING } from '../../game-constants'
-import { GameState, HoldNote } from '../../types'
 import { getDistanceBetween, getJudgement } from '../../utils/game-math'
 import { WHITE } from '../../utils/white-texture'
 
 export const holdNote = (
   game: GameState,
-  data: { startTime: number; endTime: number; column: number }
-): HoldNote => {
+  data: { startTime: number; endTime: number; column: number },
+  highlightSprite: Sprite | undefined
+) => {
   let shouldRemove: boolean = false
 
   const sprite = Sprite.from(WHITE)
 
-  sprite.tint = 0x42a5f5
+  sprite.tint = 'hsl(212, 80%, 69%)'
   sprite.width = game.colWidth
 
   const headSprite = Sprite.from(WHITE)
 
-  headSprite.tint = 0xff0000
+  headSprite.tint = 'hsl(212, 8%, 98.45%)'
   headSprite.width = game.colWidth
   headSprite.height = game.noteHeight
+
+  const highlight = (type: 'click' | 'miss' | 'tap') => {
+    if (highlightSprite) {
+      highlightSprite.tint =
+        type === 'click' ? 0xffffff : type === 'miss' ? 0xff0000 : 0x00ff00
+      highlightSprite.alpha = 0.5
+
+      setTimeout(() => {
+        highlightSprite.tint = 0xffffff
+        highlightSprite.alpha = 0.1
+      }, 200)
+    }
+  }
 
   const release = (now: number) => {
     const delta = data.endTime - now
@@ -30,9 +44,10 @@ export const holdNote = (
       const judge = getJudgement(delta, game.judgeWindows)
 
       if (judge === 0) {
+        highlight('miss')
         game.registerMiss()
-        console.log('miss miss')
       } else {
+        highlight('tap')
         game.registerJudge(judge)
       }
 
@@ -44,6 +59,7 @@ export const holdNote = (
     const delta = data.endTime - now
 
     if (delta < -game.hitWindow) {
+      highlight('miss')
       game.registerMiss()
       shouldRemove = true
     }

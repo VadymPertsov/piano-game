@@ -4,12 +4,17 @@ import { useRef } from 'react'
 
 import { ParsedBeatmapData } from '@src/shared/types/beatmap-prepare'
 
-import { DrawColumns, DrawCombo, DrawHitLine, DrawScore } from '../draw-ui'
+import {
+  DrawColumns,
+  DrawCombo,
+  DrawHighlights,
+  DrawHitLine,
+  DrawScore,
+} from '../draw-ui'
 import { useBuildGame } from './hooks/use-build-game'
-import { useInitNotes } from './hooks/use-init-notes'
+import { useInitSprites } from './hooks/use-init-sprites'
 import { useInputNotes } from './hooks/use-input-notes'
 import { updateNotes } from './update-notes'
-import { GameNote } from '../../types'
 
 extend({
   BitmapText,
@@ -42,14 +47,17 @@ export const GameScene = ({
     canvasWidth,
   })
 
-  const { colWidth, cols, hitLineY, hitWindow } = gameState
-
-  const columnNotesRef = useRef<GameNote[][]>([])
+  const { colWidth, cols, hitLineY, noteHeight } = gameState
 
   const comboRef = useRef<BitmapText | null>(null)
   const scoreRef = useRef<BitmapText | null>(null)
+  const highlightsRef = useRef<Container<Sprite> | null>(null)
 
-  const notesRef = useInitNotes(columnNotesRef, dataNotes, gameState)
+  const { columnNotesRef, notesContainerRef } = useInitSprites(
+    dataNotes,
+    gameState,
+    highlightsRef
+  )
 
   useInputNotes(columnNotesRef, timeRef)
 
@@ -62,7 +70,6 @@ export const GameScene = ({
 
     updateNotes({
       columnNotesRef,
-      hitWindow,
       time: t,
     })
 
@@ -83,7 +90,18 @@ export const GameScene = ({
 
   return (
     <pixiContainer>
-      <pixiContainer ref={notesRef} />
+      <pixiContainer ref={notesContainerRef} />
+      <pixiContainer ref={highlightsRef}>
+        {Array.from({ length: cols }).map((_, index) => (
+          <DrawHighlights
+            key={index}
+            colWidth={colWidth}
+            index={index}
+            hitLineY={hitLineY}
+            noteHeight={noteHeight}
+          />
+        ))}
+      </pixiContainer>
       <DrawScore ref={scoreRef} />
       <DrawCombo ref={comboRef} x={canvasWidth / 2} y={canvasHeight / 2} />
       <DrawColumns
