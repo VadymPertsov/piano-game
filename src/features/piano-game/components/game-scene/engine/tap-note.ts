@@ -1,9 +1,13 @@
 import { Sprite } from 'pixi.js'
 
-import { GameState } from './types'
-import { GAP, SIDE_PADDING } from '../../game-constants'
-import { getDistanceBetween, getJudgement } from '../../utils/game-math'
-import { WHITE } from '../../utils/white-texture'
+import { SIDE_PADDING, GAP } from '@src/features/piano-game/game-constants'
+import {
+  getJudgement,
+  getDistanceBetween,
+} from '@src/features/piano-game/utils/game-math'
+import { WHITE } from '@src/features/piano-game/utils/white-texture'
+
+import { GameState } from '../types'
 
 export const tapNote = (
   game: GameState,

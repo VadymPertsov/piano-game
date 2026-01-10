@@ -5,8 +5,8 @@ import { SIDE_PADDING, GAP } from '@src/features/piano-game/game-constants'
 import { WHITE } from '@src/features/piano-game/utils/white-texture'
 import { ColumnNote } from '@src/shared/types/beatmap-prepare'
 
-import { holdNote } from '../hold-note'
-import { tapNote } from '../tap-note'
+import { holdNote } from '../engine/hold-note'
+import { tapNote } from '../engine/tap-note'
 import { GameState, GameNote } from '../types'
 
 export const useInitSprites = (

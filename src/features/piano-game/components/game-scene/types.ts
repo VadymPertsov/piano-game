@@ -4,8 +4,8 @@ import {
   SVSegment,
 } from '@src/shared/types/beatmap-prepare'
 
-import { holdNote } from './hold-note'
-import { tapNote } from './tap-note'
+import { holdNote } from './engine/hold-note'
+import { tapNote } from './engine/tap-note'
 
 export interface GameState {
   cols: number

@@ -1,6 +1,6 @@
 import { RefObject } from 'react'
 
-import { GameNote } from './types'
+import { GameNote } from '../types'
 
 export const updateNotes = ({
   columnNotesRef,

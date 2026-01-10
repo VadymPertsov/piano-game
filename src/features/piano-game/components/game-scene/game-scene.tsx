@@ -4,11 +4,11 @@ import { useRef } from 'react'
 
 import { ParsedBeatmapData } from '@src/shared/types/beatmap-prepare'
 
-import { DrawColumns, DrawCombo, DrawHitLine, DrawScore } from '../draw-ui'
+import { DrawScore, DrawCombo, DrawColumns, DrawHitLine } from '../draw-ui'
+import { updateNotes } from './engine/update-notes'
 import { useBuildGame } from './hooks/use-build-game'
 import { useInitSprites } from './hooks/use-init-sprites'
 import { useInputNotes } from './hooks/use-input-notes'
-import { updateNotes } from './update-notes'
 
 extend({
   BitmapText,
