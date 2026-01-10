@@ -18,46 +18,49 @@ export const tapNote = (
   const sprite = Sprite.from(WHITE)
   sprite.width = game.colWidth
   sprite.height = game.noteHeight
-  sprite.tint = 'hsl(212, 80%, 69%)'
+  sprite.tint = 0x61afff
   sprite.alpha = 0.8
   sprite.zIndex = 1
+  sprite.anchor.set(0, 0)
+  sprite.visible = false
 
-  const highlight = (type: 'click' | 'miss' | 'tap') => {
-    if (highlightSprite) {
-      highlightSprite.tint =
-        type === 'click' ? 0xffffff : type === 'miss' ? 0xff0000 : 0x00ff00
-      highlightSprite.alpha = 0.5
+  const highlight = (type: 'tap' | 'release') => {
+    if (!highlightSprite) return
 
-      setTimeout(() => {
-        highlightSprite.tint = 0xffffff
-        highlightSprite.alpha = 0.1
-      }, 200)
+    if (type === 'tap') {
+      highlightSprite.alpha = 0.8
+    } else {
+      highlightSprite.alpha = 0.4
     }
   }
 
   const hit = (now: number) => {
-    highlight('click')
+    highlight('tap')
+
     const delta = data.startTime - now
 
     if (Math.abs(delta) > game.hitWindow) return
 
     const judge = getJudgement(delta, game.judgeWindows)
     if (judge === 0) {
-      highlight('miss')
       game.registerMiss()
     } else {
-      highlight('tap')
       game.registerJudge(judge)
     }
 
     shouldRemove = true
   }
 
+  const release = () => {
+    highlight('release')
+  }
+
   const update = (now: number) => {
+    sprite.visible = true
+
     const delta = data.startTime - now
 
     if (delta < -game.hitWindow) {
-      highlight('miss')
       game.registerMiss()
       shouldRemove = true
     }
@@ -76,7 +79,7 @@ export const tapNote = (
     type: 'tap',
     column: data.column,
     startTime: data.startTime,
-    sprite,
+    view: sprite,
 
     get shouldRemove() {
       return shouldRemove
@@ -87,6 +90,7 @@ export const tapNote = (
     },
 
     hit,
+    release,
     update,
   }
 }

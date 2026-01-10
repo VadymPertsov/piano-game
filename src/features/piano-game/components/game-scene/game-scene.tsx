@@ -4,13 +4,7 @@ import { useRef } from 'react'
 
 import { ParsedBeatmapData } from '@src/shared/types/beatmap-prepare'
 
-import {
-  DrawColumns,
-  DrawCombo,
-  DrawHighlights,
-  DrawHitLine,
-  DrawScore,
-} from '../draw-ui'
+import { DrawColumns, DrawCombo, DrawHitLine, DrawScore } from '../draw-ui'
 import { useBuildGame } from './hooks/use-build-game'
 import { useInitSprites } from './hooks/use-init-sprites'
 import { useInputNotes } from './hooks/use-input-notes'
@@ -47,17 +41,13 @@ export const GameScene = ({
     canvasWidth,
   })
 
-  const { colWidth, cols, hitLineY, noteHeight } = gameState
+  const { colWidth, cols, hitLineY } = gameState
 
   const comboRef = useRef<BitmapText | null>(null)
   const scoreRef = useRef<BitmapText | null>(null)
-  const highlightsRef = useRef<Container<Sprite> | null>(null)
 
-  const { columnNotesRef, notesContainerRef } = useInitSprites(
-    dataNotes,
-    gameState,
-    highlightsRef
-  )
+  const { columnNotesRef, notesContainerRef, highlightsContainerRef } =
+    useInitSprites(dataNotes, gameState, canvasHeight)
 
   useInputNotes(columnNotesRef, timeRef)
 
@@ -65,12 +55,9 @@ export const GameScene = ({
     if (!isGameStart) return
 
     updateTime()
-
-    const t = timeRef.current
-
     updateNotes({
       columnNotesRef,
-      time: t,
+      time: timeRef.current,
     })
 
     if (
@@ -91,17 +78,7 @@ export const GameScene = ({
   return (
     <pixiContainer>
       <pixiContainer ref={notesContainerRef} />
-      <pixiContainer ref={highlightsRef}>
-        {Array.from({ length: cols }).map((_, index) => (
-          <DrawHighlights
-            key={index}
-            colWidth={colWidth}
-            index={index}
-            hitLineY={hitLineY}
-            noteHeight={noteHeight}
-          />
-        ))}
-      </pixiContainer>
+      <pixiContainer ref={highlightsContainerRef} />
       <DrawScore ref={scoreRef} />
       <DrawCombo ref={comboRef} x={canvasWidth / 2} y={canvasHeight / 2} />
       <DrawColumns

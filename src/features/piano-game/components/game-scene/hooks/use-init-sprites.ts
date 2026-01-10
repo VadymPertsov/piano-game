@@ -1,6 +1,8 @@
 import { Container, Sprite } from 'pixi.js'
-import { RefObject, useEffect, useRef } from 'react'
+import { useEffect, useRef } from 'react'
 
+import { SIDE_PADDING, GAP } from '@src/features/piano-game/game-constants'
+import { WHITE } from '@src/features/piano-game/utils/white-texture'
 import { ColumnNote } from '@src/shared/types/beatmap-prepare'
 
 import { holdNote } from '../hold-note'
@@ -10,10 +12,40 @@ import { GameState, GameNote } from '../types'
 export const useInitSprites = (
   dataNotes: ColumnNote[][],
   gameState: GameState,
-  highlightsRef: RefObject<Container<Sprite> | null>
+  canvasHeight: number
 ) => {
   const columnNotesRef = useRef<GameNote[][]>([])
-  const notesContainerRef = useRef<Container>(null)
+  const notesContainerRef = useRef<Container | null>(null)
+
+  const highlightsContainerRef = useRef<Container<Sprite> | null>(null)
+
+  useEffect(() => {
+    const stage = highlightsContainerRef.current
+    if (!stage) return
+
+    stage.removeChildren()
+
+    if (dataNotes.length === 0) return
+
+    for (let i = 0; i < dataNotes.length; i++) {
+      const sprite = Sprite.from(WHITE)
+      sprite.width = gameState.colWidth
+      sprite.height = canvasHeight - gameState.hitLineY
+      sprite.tint = 0xffffff
+      sprite.alpha = 0.4
+      sprite.zIndex = 2
+      sprite.x = SIDE_PADDING + i * (gameState.colWidth + GAP)
+      sprite.y = gameState.hitLineY
+
+      stage.addChild(sprite)
+    }
+  }, [
+    canvasHeight,
+    dataNotes.length,
+    gameState.colWidth,
+    gameState.hitLineY,
+    gameState.noteHeight,
+  ])
 
   useEffect(() => {
     const stage = notesContainerRef.current
@@ -35,7 +67,7 @@ export const useInitSprites = (
                   startTime: noteData.startTime,
                   endTime: noteData.endTime,
                 },
-                highlightsRef.current?.children[noteData.column]
+                highlightsContainerRef.current?.children[noteData.column]
               )
             : tapNote(
                 gameState,
@@ -43,20 +75,18 @@ export const useInitSprites = (
                   column: noteData.column,
                   startTime: noteData.startTime,
                 },
-                highlightsRef.current?.children[noteData.column]
+                highlightsContainerRef.current?.children[noteData.column]
               )
 
-        stage.addChild(note.sprite)
-        if ('headSprite' in note) {
-          stage.addChild(note.headSprite)
-        }
+        stage.addChild(note.view)
         return note
       })
     )
-  }, [dataNotes, columnNotesRef, gameState, highlightsRef])
+  }, [dataNotes, gameState])
 
   return {
     notesContainerRef,
     columnNotesRef,
+    highlightsContainerRef,
   }
 }

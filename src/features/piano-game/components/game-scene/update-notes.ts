@@ -24,13 +24,13 @@ export const updateNotes = ({
         // // hitObject.sprite.destroy()
         // col.shift()
         // i = 0
-        hitObject.sprite.parent?.removeChild(hitObject.sprite)
-        hitObject.sprite.destroy({ children: true })
+        hitObject.view.parent?.removeChild(hitObject.view)
+        hitObject.view.destroy({ children: true })
         col.splice(i, 1)
         continue
       }
 
-      if (hitObject.sprite.y < 0) {
+      if (hitObject.view.y < 0) {
         break
       }
 
