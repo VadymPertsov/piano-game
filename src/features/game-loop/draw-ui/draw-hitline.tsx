@@ -1,4 +1,4 @@
-import { WHITE } from '../../utils/white-texture'
+import { WHITE } from '../utils/white-texture'
 
 interface DrawHitLineProps {
   canvasWidth: number

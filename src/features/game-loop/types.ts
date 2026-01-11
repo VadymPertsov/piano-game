@@ -1,11 +1,7 @@
-import {
-  JudgeWindows,
-  RegisterJudge,
-  SVSegment,
-} from '@src/shared/types/beatmap-prepare'
+import { JudgeWindows, SVSegment } from '@src/shared/types/beatmap-prepare'
 
-import { holdNote } from './engine/hold-note'
-import { tapNote } from './engine/tap-note'
+import { holdNote } from './notes/hold-note'
+import { tapNote } from './notes/tap-note'
 
 export interface GameState {
   cols: number
@@ -17,8 +13,8 @@ export interface GameState {
   svTimeline: SVSegment[]
   judgeWindows: JudgeWindows
   hitWindow: number
-  registerMiss: () => void
-  registerJudge: (value: RegisterJudge) => void
+  canvasHeight: number
+  canvasWidth: number
 }
 
 export type GameNote = ReturnType<typeof tapNote> | ReturnType<typeof holdNote>

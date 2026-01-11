@@ -4,8 +4,6 @@ import {
   ColumnNote,
 } from '@src/shared/types/beatmap-prepare'
 
-import { HOLD_NOTE } from '../game-constants'
-
 type Sections =
   | 'Metadata'
   | 'Difficulty'
@@ -121,7 +119,7 @@ const parseNotes = (
     const currentColumn = columnNotes[column]
     if (!currentColumn) return
 
-    if (type & HOLD_NOTE) {
+    if (type & 128) {
       const endTime = p[5] ? Number(p[5].split(':')[0]) : undefined
       currentColumn.push({
         column,

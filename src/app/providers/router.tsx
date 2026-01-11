@@ -1,7 +1,7 @@
 import { ReactNode } from 'react'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 
-import { PRIVATE_ROUTES, PUBLIC_ROUTES } from '@src/shared/constants/routes'
+import { PUBLIC_ROUTES, PRIVATE_ROUTES } from '@src/shared/constants/routes'
 
 import { AppLayout } from '../layout/app-layout'
 

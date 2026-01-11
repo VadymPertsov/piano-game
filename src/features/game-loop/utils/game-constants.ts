@@ -1,6 +1,3 @@
-export const HOLD_NOTE = 128
-export const TAB_NOTE = 1
-
 export const KEYS = ['d', 'f', 'j', 'k']
 
 export const OFFSET = 0

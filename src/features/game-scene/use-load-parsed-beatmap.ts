@@ -7,8 +7,8 @@ import {
   saveParsedBeatmap,
 } from '@src/shared/db/beatmap-actions'
 
-import { parseBeatmapData } from '../../utils/parse-beatmap-data'
-import { prepareBeatmapData } from '../../utils/prepare-beatmap-data'
+import { parseBeatmapData } from './utils/parse-beatmap-data'
+import { prepareBeatmapData } from './utils/prepare-beatmap-data'
 
 export const useLoadParsedBeatmap = (title?: string) => {
   return useQuery({

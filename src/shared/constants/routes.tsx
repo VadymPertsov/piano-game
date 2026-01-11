@@ -1,7 +1,6 @@
 import { ReactNode } from 'react'
 
-import { PianoGame } from '@src/features/piano-game'
-import { PlayPage, WelcomePage } from '@src/pages'
+import { GamePage, PlayPage, WelcomePage } from '@src/pages'
 
 export const ROUTES = {
   home: '/',
@@ -31,7 +30,7 @@ export const PUBLIC_ROUTES: Route[] = [
   },
   {
     path: `${ROUTES.play}/:title`,
-    element: <PianoGame />,
+    element: <GamePage />,
     type: 'public',
   },
 ]

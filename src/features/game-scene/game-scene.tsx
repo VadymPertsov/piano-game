@@ -1,18 +1,20 @@
 import { Application } from '@pixi/react'
-import { useEffect, useLayoutEffect, useRef, useState } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
+import { useState, useRef, useEffect, useLayoutEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 
 import { useBodyBackground } from '@src/shared/hooks/use-body-background'
 import { useCurrentBeatmapStore } from '@src/store/current-beatmap-store'
 
-import { GameScene } from '../game-scene'
+import { GameLoop } from '../game-loop'
 import { useLoadParsedBeatmap } from './use-load-parsed-beatmap'
 
 import styles from './styles.module.scss'
 
-export const PianoGame = () => {
-  const { title } = useParams<{ title?: string }>()
+interface GameSceneProps {
+  title?: string
+}
 
+export const GameScene = ({ title }: GameSceneProps) => {
   const beatmap = useCurrentBeatmapStore(s => s.beatmap)
 
   const navigate = useNavigate()
@@ -61,7 +63,7 @@ export const PianoGame = () => {
             wheel: false,
           }}
         >
-          <GameScene
+          <GameLoop
             data={data}
             canvasWidth={canvasWidth}
             canvasHeight={canvasHeight}

@@ -1,5 +1,5 @@
-import { SIDE_PADDING, GAP } from '../../game-constants'
-import { WHITE } from '../../utils/white-texture'
+import { SIDE_PADDING, GAP } from '../utils/game-constants'
+import { WHITE } from '../utils/white-texture'
 
 interface DrawColumnsProps {
   cols: number
