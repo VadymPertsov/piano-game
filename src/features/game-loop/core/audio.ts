@@ -1,6 +1,7 @@
 export const createAudio = (url: string) => {
   const audio = new Audio(url)
   audio.preload = 'auto'
+  audio.volume = 0.5
 
   let started = false
 

@@ -23,25 +23,20 @@ export const highlightView = (game: GameState) => {
 
   const tap = () => {
     sprite.alpha = 0.8
-
-    console.log('tap')
   }
 
   const release = () => {
     sprite.alpha = 0.3
-    console.log('release')
   }
 
   const tapHold = () => {
     sprite.alpha = 0.8
     headSprite.alpha = 0.8
-    console.log('tapHold')
   }
 
   const releaseHold = () => {
     sprite.alpha = 0.3
     headSprite.alpha = 0
-    console.log('releaseHold')
   }
 
   return {

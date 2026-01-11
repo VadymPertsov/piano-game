@@ -51,15 +51,17 @@ export const createJudge = () => {
     apply,
     reset,
 
-    get summary() {
+    get judge() {
       return {
         currentCombo,
         maxCombo,
         score,
         currentJudge,
         lastUpdate,
-        summary: { ...summary },
+        summary,
       }
     },
   }
 }
+
+export type JudgeReturn = ReturnType<typeof createJudge>

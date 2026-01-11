@@ -66,11 +66,13 @@ export const createGame = (
     hit,
     release,
 
-    get summary() {
-      return judge.summary
+    get judge() {
+      return judge.judge
     },
     get playing() {
       return playing
     },
   }
 }
+
+export type GameReturn = ReturnType<typeof createGame> | null
