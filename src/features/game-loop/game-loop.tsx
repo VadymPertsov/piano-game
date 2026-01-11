@@ -1,10 +1,10 @@
 import { extend, useTick } from '@pixi/react'
 import { BitmapText, Container, Sprite } from 'pixi.js'
-import { useRef, useEffect, useCallback } from 'react'
+import { useRef } from 'react'
 
 import { ParsedBeatmapData } from '@src/shared/types/beatmap-prepare'
 
-import { createGame } from './core/game'
+import { GameReturn } from './core/game'
 import {
   DrawScore,
   DrawCombo,
@@ -12,12 +12,10 @@ import {
   DrawColumns,
   DrawHitLine,
 } from './draw-ui'
+import { useControls } from './hooks/use-controls'
 import { useGameConfig } from './hooks/use-game-config'
-import { holdNote } from './notes/hold-note'
-import { tapNote } from './notes/tap-note'
-import { GameNote } from './types'
-import { SIDE_PADDING, GAP, HIT_COLORS } from './utils/game-constants'
-import { HighlightView, highlightView } from './view/highlight-view'
+import { useGenerateSprites } from './hooks/use-generate-sprites'
+import { updateCombo, updateScore, updateJudge } from './update-ui'
 
 extend({
   BitmapText,
@@ -36,181 +34,35 @@ export const GameLoop = ({
   canvasHeight,
   canvasWidth,
 }: GameSceneProps) => {
-  const gameConfig = useGameConfig({ data, canvasHeight, canvasWidth })
+  const gameRef = useRef<GameReturn>(null)
 
-  const stageNotesRef = useRef<Container>(null)
-  const gameRef = useRef<ReturnType<typeof createGame> | null>(null)
+  const gameConfig = useGameConfig({ data, canvasHeight, canvasWidth })
 
   const comboRef = useRef<BitmapText | null>(null)
   const scoreRef = useRef<BitmapText | null>(null)
   const judgeRef = useRef<BitmapText | null>(null)
 
-  const stageHighlightRef = useRef<Container>(null)
-  const highlightRefs = useRef<HighlightView[]>([])
-
-  useEffect(() => {
-    const stage = stageHighlightRef.current
-    if (!stage) return
-
-    stage.removeChildren()
-    highlightRefs.current = []
-
-    for (let i = 0; i < gameConfig.cols; i++) {
-      const highlight = highlightView(gameConfig)
-      highlight.view.x = SIDE_PADDING + i * (gameConfig.colWidth + GAP)
-      highlight.view.y = gameConfig.hitLineY
-      stage.addChild(highlight.view)
-      highlightRefs.current.push(highlight)
-    }
-  }, [gameConfig])
-
-  const generateNotes = useCallback((): GameNote[][] => {
-    const stage = stageNotesRef.current
-    if (!stage) return []
-
-    stage.removeChildren()
-
-    return data.columnNotes.map(col =>
-      col.map(noteData => {
-        const note =
-          noteData.endTime !== undefined
-            ? holdNote(
-                gameConfig,
-                {
-                  column: noteData.column,
-                  startTime: noteData.startTime,
-                  endTime: noteData.endTime,
-                },
-                highlightRefs.current?.[noteData.column]
-              )
-            : tapNote(
-                gameConfig,
-                {
-                  column: noteData.column,
-                  startTime: noteData.startTime,
-                },
-                highlightRefs.current?.[noteData.column]
-              )
-
-        stage.addChild(note.view)
-        return note
-      })
-    )
-  }, [data.columnNotes, gameConfig])
-
-  useEffect(() => {
-    gameRef.current = createGame(
-      generateNotes,
-      data.settings.audioLeadIn,
-      data.audioUrl
-    )
-
-    return () => {
-      gameRef.current = null
-    }
-  }, [data.audioUrl, data.settings.audioLeadIn, generateNotes])
-
-  useEffect(() => {
-    const onKeyDown = (e: KeyboardEvent) => {
-      if (!gameRef.current) return
-
-      const key = e.key.toLowerCase()
-
-      if (key === 'g') {
-        console.log('Game Started')
-        gameRef.current.start()
-      }
-
-      if (key === 't') {
-        console.log('Game Restarted')
-        gameRef.current.restart()
-      }
-    }
-
-    window.addEventListener('keydown', onKeyDown)
-    return () => window.removeEventListener('keydown', onKeyDown)
-  }, [])
-
-  useEffect(() => {
-    const keyMap: Record<string, number> = {
-      d: 0,
-      f: 1,
-      j: 2,
-      k: 3,
-    }
-
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.repeat) return
-      const col = keyMap[e.key.toLowerCase()]
-      if (col !== undefined && gameRef.current) {
-        gameRef.current.hit(col)
-      }
-    }
-
-    const handleKeyUp = (e: KeyboardEvent) => {
-      if (e.repeat) return
-      const col = keyMap[e.key.toLowerCase()]
-      if (col !== undefined && gameRef.current) {
-        gameRef.current.release(col)
-      }
-    }
-
-    window.addEventListener('keydown', handleKeyDown)
-    window.addEventListener('keyup', handleKeyUp)
-
-    return () => {
-      window.removeEventListener('keydown', handleKeyDown)
-      window.removeEventListener('keyup', handleKeyUp)
-    }
-  }, [])
-
   const lastVisualUpdate = useRef<number>(0)
+
+  const { stageHighlightRef, stageNotesRef } = useGenerateSprites(
+    gameConfig,
+    data,
+    gameRef
+  )
+
+  useControls(gameRef)
 
   useTick(() => {
     if (!gameRef.current || !gameRef.current.playing) return
 
     gameRef.current.update()
+    console.log('asd')
 
-    if (
-      comboRef.current &&
-      comboRef.current.text !== String(gameRef.current?.summary.currentCombo)
-    ) {
-      comboRef.current.text = String(gameRef.current?.summary.currentCombo)
-    }
+    if (!gameRef.current.judge.summary) return
 
-    if (
-      scoreRef.current &&
-      scoreRef.current.text !== String(gameRef.current?.summary.score)
-    ) {
-      scoreRef.current.text = String(gameRef.current?.summary.score)
-    }
-
-    if (judgeRef.current && gameRef.current?.summary) {
-      const summary = gameRef.current.summary
-
-      if (summary.lastUpdate !== lastVisualUpdate.current) {
-        lastVisualUpdate.current = summary.lastUpdate
-
-        const value = summary.currentJudge
-        if (value === undefined) return
-        judgeRef.current.text = value === 0 ? 'MISS' : String(value)
-        judgeRef.current.style.fill = HIT_COLORS[value]
-
-        judgeRef.current.visible = true
-        judgeRef.current.alpha = 1
-        judgeRef.current.scale.set(1.5)
-      }
-
-      if (judgeRef.current.visible) {
-        judgeRef.current.alpha = Math.max(0, judgeRef.current.alpha - 0.04)
-        const scale = Math.max(1, judgeRef.current.scale.x - 0.03)
-        judgeRef.current.scale.set(scale)
-
-        if (judgeRef.current.alpha <= 0) {
-          judgeRef.current.visible = false
-        }
-      }
-    }
+    updateCombo(comboRef, gameRef.current.judge.currentCombo)
+    updateScore(scoreRef, gameRef.current.judge.score)
+    updateJudge(judgeRef, gameRef.current.judge, lastVisualUpdate)
   })
 
   return (
