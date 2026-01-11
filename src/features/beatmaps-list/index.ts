@@ -1,1 +1,1 @@
-export { MyBeatmapList } from './components/my-beatmap-list'
+export { MyBeatmapList } from './my-beatmap-list'
