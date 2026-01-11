@@ -69,5 +69,8 @@ export const createGame = (
     get summary() {
       return judge.summary
     },
+    get playing() {
+      return playing
+    },
   }
 }

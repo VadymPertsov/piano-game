@@ -173,9 +173,10 @@ export const GameLoop = ({
   }
 
   useTick(() => {
-    if (gameRef.current) {
-      gameRef.current.update()
-    }
+    if (!gameRef.current || !gameRef.current.playing) return
+
+    gameRef.current.update()
+    console.log('asd')
 
     if (
       comboRef.current &&
