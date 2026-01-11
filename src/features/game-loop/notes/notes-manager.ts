@@ -27,7 +27,9 @@ export const createNotesManager = (gameNotes: GameNote[][]) => {
           // // hitObject.sprite.destroy()
           // col.shift()
           // i = 0
-
+          if (hitObject.type === 'hold' && 'highlight' in hitObject) {
+            hitObject.highlight?.releaseHold()
+          }
           hitObject.view.parent?.removeChild(hitObject.view)
           hitObject.view.destroy({ children: true })
           col.splice(i, 1)

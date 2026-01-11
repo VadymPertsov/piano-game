@@ -59,6 +59,7 @@ export const holdNote = (
     type: 'hold',
     column: data.column,
     view: sprite.view,
+    highlight,
 
     get shouldRemove() {
       return shouldRemove
