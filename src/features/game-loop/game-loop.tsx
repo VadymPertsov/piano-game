@@ -16,7 +16,7 @@ import { useGameConfig } from './hooks/use-game-config'
 import { holdNote } from './notes/hold-note'
 import { tapNote } from './notes/tap-note'
 import { GameNote } from './types'
-import { SIDE_PADDING, GAP } from './utils/game-constants'
+import { SIDE_PADDING, GAP, HIT_COLORS } from './utils/game-constants'
 import { HighlightView, highlightView } from './view/highlight-view'
 
 extend({
@@ -166,17 +166,10 @@ export const GameLoop = ({
 
   const lastVisualUpdate = useRef<number>(0)
 
-  const colors: Record<number, number> = {
-    320: 0xffcc00,
-    300: 0xffff00,
-    0: 0xff0000,
-  }
-
   useTick(() => {
     if (!gameRef.current || !gameRef.current.playing) return
 
     gameRef.current.update()
-    console.log('asd')
 
     if (
       comboRef.current &&
@@ -199,8 +192,9 @@ export const GameLoop = ({
         lastVisualUpdate.current = summary.lastUpdate
 
         const value = summary.currentJudge
+        if (value === undefined) return
         judgeRef.current.text = value === 0 ? 'MISS' : String(value)
-        judgeRef.current.style.fill = colors[value ?? -1] || 0xffffff
+        judgeRef.current.style.fill = HIT_COLORS[value]
 
         judgeRef.current.visible = true
         judgeRef.current.alpha = 1
