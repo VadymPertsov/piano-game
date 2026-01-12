@@ -55,7 +55,7 @@ export const GameScene = ({ title }: GameSceneProps) => {
           autoDensity
           width={canvasWidth}
           height={canvasHeight}
-          backgroundAlpha={0.5}
+          backgroundAlpha={0.7}
           eventFeatures={{
             move: true,
             globalMove: false,

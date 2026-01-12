@@ -56,7 +56,6 @@ export const GameLoop = ({
     if (!gameRef.current || !gameRef.current.playing) return
 
     gameRef.current.update()
-    console.log('asd')
 
     if (!gameRef.current.judge.summary) return
 
