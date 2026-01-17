@@ -4,11 +4,17 @@ export const createAudio = (url: string) => {
   audio.volume = 0.2
 
   let started = false
+  let ended = false
+
+  audio.addEventListener('ended', () => {
+    ended = true
+  })
 
   const tryPlay = (time: number) => {
     if (started) return
     if (time >= 0) {
       started = true
+      ended = false
       audio.currentTime = 0
       audio.play()
     }
@@ -16,6 +22,7 @@ export const createAudio = (url: string) => {
 
   const reset = () => {
     started = false
+    ended = false
     audio.pause()
     audio.currentTime = 0
     // URL.revokeObjectURL(url)
@@ -27,6 +34,10 @@ export const createAudio = (url: string) => {
 
     get time() {
       return audio.currentTime * 1000
+    },
+
+    get ended() {
+      return ended
     },
   }
 }

@@ -16,16 +16,20 @@ export const createGame = (
   let notes = createNotesManager(createNotes())
 
   let playing = false
+  let finished = false
 
   const start = () => {
     if (playing) return
+
     playing = true
+    finished = false
 
     clock.start()
   }
 
   const reset = () => {
     playing = false
+    finished = false
 
     clock.reset()
     judge.reset()
@@ -41,26 +45,42 @@ export const createGame = (
   }
 
   const update = () => {
-    if (!playing) return
+    if (!playing || finished) return
 
     const time = clock.time()
     audio.tryPlay(time)
 
     const result = notes.update(time)
-    if (result === undefined) return
-    judge.apply(result)
+    if (result !== undefined) {
+      judge.apply(result)
+    }
+
+    if (audio.ended) {
+      finish()
+    }
+  }
+
+  const finish = () => {
+    playing = false
+    finished = true
   }
 
   const hit = (column: number) => {
+    if (!playing || finished) return
+
     const result = notes.hit(column, clock.time())
-    if (result === undefined) return
-    judge.apply(result.judge)
+    if (result !== undefined) {
+      judge.apply(result.judge)
+    }
   }
 
   const release = (column: number) => {
+    if (!playing || finished) return
+
     const result = notes.release(column, clock.time())
-    if (result === undefined) return
-    judge.apply(result.judge)
+    if (result !== undefined) {
+      judge.apply(result.judge)
+    }
   }
 
   return {
@@ -76,6 +96,9 @@ export const createGame = (
     },
     get playing() {
       return playing
+    },
+    get finished() {
+      return finished
     },
   }
 }

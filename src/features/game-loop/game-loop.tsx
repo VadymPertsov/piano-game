@@ -51,6 +51,10 @@ export const GameLoop = ({
 
     gameRef.current.update()
 
+    // if (gameRef.current.finished) {
+    //   console.log(gameRef.current.finished)
+    // }
+
     if (!gameRef.current.judge.summary) return
 
     updateCombo(comboRef, gameRef.current.judge.currentCombo)
