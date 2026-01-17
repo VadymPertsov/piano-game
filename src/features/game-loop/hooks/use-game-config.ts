@@ -26,8 +26,8 @@ export const useGameConfig = ({
   const BASE_PIXELS_PER_MS =
     difficulty.sliderMultiplier * editor.distanceSpacing * SCROLL_SCALE
   const COL_WIDTH = (canvasWidth - SIDE_PADDING * 2 - GAP * (COLS - 1)) / COLS
-  const HIT_LINE_Y = canvasHeight - 100
-  const NOTE_HEIGHT = Math.max(30, 60 * BASE_PIXELS_PER_MS)
+  const NOTE_HEIGHT = Math.max(50, 80 * BASE_PIXELS_PER_MS)
+  const HIT_LINE_Y = canvasHeight - 50
   const PREEMPT = HIT_LINE_Y / BASE_PIXELS_PER_MS
 
   const svTimeline = useMemo(

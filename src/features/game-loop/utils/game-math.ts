@@ -6,12 +6,12 @@ import {
 } from '@src/shared/types/beatmap-prepare'
 
 export const makeJudgeWindows = (od: number): JudgeWindows => ({
-  '320': 16,
-  '300': Math.max(1, 64 - 3 * od),
-  '200': Math.max(1, 97 - 3 * od),
-  '100': Math.max(1, 127 - 3 * od),
-  '50': Math.max(1, 151 - 3 * od),
-  '0': Math.max(1, 188 - 3 * od),
+  '320': od <= 5 ? 22.4 - 0.6 * od : 24.9 - 1.1 * od,
+  '300': 64 - 3 * od,
+  '200': 97 - 3 * od,
+  '100': 127 - 3 * od,
+  '50': 151 - 3 * od,
+  '0': 188 - 3 * od,
 })
 
 export const getJudgement = (

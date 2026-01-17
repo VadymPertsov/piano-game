@@ -24,12 +24,16 @@ export const createGame = (
     clock.start()
   }
 
-  const restart = () => {
+  const reset = () => {
     playing = false
 
     clock.reset()
     judge.reset()
     audio.reset()
+  }
+
+  const restart = () => {
+    reset()
 
     notes = createNotesManager(createNotes())
 
@@ -61,6 +65,7 @@ export const createGame = (
 
   return {
     start,
+    reset,
     restart,
     update,
     hit,

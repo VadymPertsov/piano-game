@@ -20,7 +20,7 @@ export const DrawColumns = ({
           <pixiSprite
             key={index}
             texture={WHITE}
-            x={x + colWidth - 1}
+            x={x + colWidth + 2}
             y={0}
             width={1}
             height={canvasHeight}

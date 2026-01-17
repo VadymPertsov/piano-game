@@ -18,7 +18,7 @@ export const createAudio = (url: string) => {
     started = false
     audio.pause()
     audio.currentTime = 0
-    URL.revokeObjectURL(url)
+    // URL.revokeObjectURL(url)
   }
 
   return {

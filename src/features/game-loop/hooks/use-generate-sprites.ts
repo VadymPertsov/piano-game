@@ -28,7 +28,7 @@ export const useGenerateSprites = (
     for (let i = 0; i < gameConfig.cols; i++) {
       const highlight = highlightView(gameConfig)
       highlight.view.x = SIDE_PADDING + i * (gameConfig.colWidth + GAP)
-      highlight.view.y = gameConfig.hitLineY
+      highlight.view.y = gameConfig.hitLineY - gameConfig.noteHeight
       stage.addChild(highlight.view)
       highlightRef.current.push(highlight)
     }
@@ -81,6 +81,7 @@ export const useGenerateSprites = (
     )
 
     return () => {
+      gameRef.current?.reset()
       gameRef.current = null
       highlightRef.current = []
     }

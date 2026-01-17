@@ -10,7 +10,7 @@ export const holdView = (game: GameState) => {
   container.alpha = 0.8
 
   const sprite = Sprite.from(WHITE)
-  sprite.tint = 0x42a5f5
+  sprite.tint = 0x61afff
   sprite.width = game.colWidth
 
   const headSprite = Sprite.from(WHITE)

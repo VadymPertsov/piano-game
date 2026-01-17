@@ -1,4 +1,4 @@
-import { Container, Sprite } from 'pixi.js'
+import { Container, Graphics, Sprite } from 'pixi.js'
 
 import { GameState } from '../types'
 import { WHITE } from '../utils/white-texture'
@@ -9,34 +9,33 @@ export const highlightView = (game: GameState) => {
 
   const sprite = Sprite.from(WHITE)
   sprite.width = game.colWidth
-  sprite.height = game.canvasHeight - game.hitLineY
-  sprite.tint = 0x42a5f5
-  sprite.alpha = 0.3
+  sprite.height = game.noteHeight
+  sprite.tint = 0x61afff
+  sprite.alpha = 0
 
-  const headSprite = Sprite.from(WHITE)
-  headSprite.tint = 0xffffff
-  headSprite.width = game.colWidth
-  headSprite.height = -game.noteHeight
-  headSprite.alpha = 0
+  const border = new Graphics()
+  border.setStrokeStyle({ width: 1, color: 0xffffff, alpha: 1 })
+  border.rect(1, 1, game.colWidth - 2, game.noteHeight - 2)
+  border.stroke()
 
-  container.addChild(sprite, headSprite)
+  container.addChild(sprite, border)
 
   const tap = () => {
     sprite.alpha = 0.8
   }
 
   const release = () => {
-    sprite.alpha = 0.3
+    sprite.alpha = 0
   }
 
   const tapHold = () => {
     sprite.alpha = 0.8
-    headSprite.alpha = 0.8
+    sprite.tint = 0xffffff
   }
 
   const releaseHold = () => {
-    sprite.alpha = 0.3
-    headSprite.alpha = 0
+    sprite.alpha = 0
+    sprite.tint = 0x61afff
   }
 
   return {

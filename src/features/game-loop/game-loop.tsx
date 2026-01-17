@@ -5,13 +5,7 @@ import { useRef } from 'react'
 import { ParsedBeatmapData } from '@src/shared/types/beatmap-prepare'
 
 import { GameReturn } from './core/game'
-import {
-  DrawScore,
-  DrawCombo,
-  DrawJudge,
-  DrawColumns,
-  DrawHitLine,
-} from './draw-ui'
+import { DrawScore, DrawCombo, DrawJudge, DrawColumns } from './draw-ui'
 import { useControls } from './hooks/use-controls'
 import { useGameConfig } from './hooks/use-game-config'
 import { useGenerateSprites } from './hooks/use-generate-sprites'
@@ -81,7 +75,7 @@ export const GameLoop = ({
           canvasHeight={canvasHeight}
           colWidth={gameConfig.colWidth}
         />
-        <DrawHitLine canvasWidth={canvasWidth} hitLineY={gameConfig.hitLineY} />
+        {/* <DrawHitLine canvasWidth={canvasWidth} hitLineY={gameConfig.hitLineY} /> */}
       </pixiContainer>
     </pixiContainer>
   )
