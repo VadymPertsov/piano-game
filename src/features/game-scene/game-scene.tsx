@@ -47,6 +47,9 @@ export const GameScene = ({ title }: GameSceneProps) => {
 
   return (
     <div className={styles.root} ref={canvasRef}>
+      <div style={{ position: 'absolute', top: '100px', left: '20px' }}>
+        <p>Start: G</p> <p>Сontrols: D F J K</p>
+      </div>
       {isLoading || !data || !canvasHeight ? (
         <>Loading beatmap and preparing canvas...</>
       ) : (
