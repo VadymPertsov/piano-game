@@ -1,5 +1,10 @@
 # Piano Game 🎹
 
+https://piano-game-lac.vercel.app/
+
+Start G
+Controls D F J K
+
 A basic rhythm game inspired by **osu!mania** and **Piano Tails**.  
 Hit notes in time with the music, track your combos, and enjoy the rhythm!
 
